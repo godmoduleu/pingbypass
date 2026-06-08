@@ -1,0 +1,137 @@
+plugins {
+	id 'java'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'com.gradleup.shadow' version '9.0.0-beta4'
+	id 'io.freefair.lombok' version '8.11'
+	id 'com.github.gmazzo.buildconfig' version '5.5.1'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.mod_id
+}
+
+repositories {
+	maven {
+		name = "meteor-maven"
+		url = "https://maven.meteordev.org/releases"
+	}
+	maven {
+		name = "meteor-maven"
+		url = "https://maven.meteordev.org"
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	implementation(shadow("org.reflections:reflections:0.10.2"))
+	implementation(shadow("meteordevelopment:discord-ipc:1.1"))
+
+	testImplementation "net.jqwik:jqwik:1.9.2"
+	testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+	testImplementation "org.mockito:mockito-core:5.14.2"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+def getCommitHash = { ->
+	def gitProcess = 'git rev-parse HEAD'.execute()
+	gitProcess.waitFor()
+	return gitProcess.text.trim().take(10)
+}
+
+def getRevisionCount = { ->
+	def gitProcess = 'git rev-list --all --count'.execute()
+	gitProcess.waitFor()
+	return gitProcess.text.trim()
+}
+
+
+buildConfig {
+	className("BuildConstants")
+	packageName(group)
+
+	buildConfigField(String, 'MOD_NAME', project.mod_name)
+	buildConfigField(String, 'MOD_ID', project.mod_id)
+	buildConfigField(String, 'MOD_VERSION', project.mod_version)
+	buildConfigField(String, 'MINECRAFT_VERSION', project.minecraft_version)
+	buildConfigField(String, 'GIT_HASH', getCommitHash())
+	buildConfigField(String, 'GIT_REVISION', getRevisionCount())
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/pingbypass.accesswidener")
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+test {
+	useJUnitPlatform()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
+}
+
+shadowJar {
+	configurations = [project.configurations.shadow]
+	archiveClassifier.set("dev")
+}
+
+remapJar {
+	dependsOn(shadowJar)
+	inputFile = tasks.shadowJar.archiveFile
+
+	doLast {
+		copy {
+			from archiveFile
+			into file('test-proxy/.minecraft/mods')
+		}
+	}
+}
+
+tasks.register("exportMcSources", Copy) {
+    dependsOn "genSources"
+
+    doFirst {
+        def sourceJars = fileTree(".gradle/loom-cache/").matching {
+            include "**/*-sources.jar"
+        }.files
+
+        if (sourceJars.isEmpty()) {
+            throw new GradleException("No sources jar found. Run genSources first.")
+        }
+
+        // Pick the most recent one (usually correct)
+        def latestJar = sourceJars.max { it.lastModified() }
+
+        println "Using sources jar: ${latestJar}"
+
+        from(zipTree(latestJar))
+        into("$buildDir/exported-sources")
+    }
+}

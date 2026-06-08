@@ -1,0 +1,31 @@
+{
+  "targets": {
+    "swap": {}
+  },
+  "passes": [
+    {
+      "program": "pingbypass:program/outline",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main",
+          "bilinear": true
+        }
+      ],
+      "output": "swap",
+      "uniforms": []
+    },
+    {
+      "program": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap",
+          "bilinear": true
+        }
+      ] ,
+      "output": "minecraft:main",
+      "uniforms": []
+    }
+  ]
+}

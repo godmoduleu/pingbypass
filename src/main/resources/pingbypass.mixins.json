@@ -1,0 +1,40 @@
+{
+  "required": true,
+  "package": "eu.client.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockBreakingInfoMixin",
+    "BlockMixin",
+    "ClientConnectionMixin",
+    "EntityMixin",
+    "LivingEntityMixin",
+    "MinecraftClientMixin",
+    "NetworkStateTransitionHandlerMixin",
+    "PlayerEntityMixin",
+    "RegistryLoaderMixin",
+    "accessors.CustomPayloadC2SPacketAccessor",
+    "accessors.EntityAccessor",
+    "accessors.EntityVelocityUpdateS2CPacketAccessor",
+    "accessors.PlayerInteractEntityC2SPacketAccessor",
+    "accessors.PlayerListS2CPacketAccessor",
+    "accessors.PlayerMoveC2SPacketAccessor",
+    "accessors.PlayerPositionAccessor",
+    "accessors.Vec3dAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "KeyboardInputMixin",
+    "KeyboardMixin",
+    "MouseMixin",
+    "accessors.ClientPlayerEntityAccessor",
+    "accessors.ClientPlayerInteractionManagerAccessor",
+    "accessors.ClientWorldAccessor",
+    "accessors.MinecraftClientAccessor",
+    "accessors.MouseAccessor"
+  ]
+}
