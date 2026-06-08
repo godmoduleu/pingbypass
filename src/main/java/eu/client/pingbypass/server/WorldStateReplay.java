@@ -20,10 +20,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/**
+ * Replays the current world state from the HeadlessMC proxy to the client.
+ * Modeled after PingBypass's JoinWorldService — sends packets in the exact
+ * order that a vanilla server would during PlayerList#placeNewPlayer.
+ *
+ * Returns a negative teleport ID that the client must confirm before the
+ * proxy starts forwarding live S2C packets.
+ */
 public class WorldStateReplay {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorldStateReplay.class);
     private static final Random RANDOM = new Random();
 
+    /**
+     * Replays the full world state. Returns the initialTeleportId that the
+     * client will send back in a TeleportConfirmC2SPacket.
+     */
     public static int replay(ClientConnection toClient) {
         MinecraftClient mc = MinecraftClient.getInstance();
         ClientPlayerEntity player = mc.player;
@@ -38,6 +50,7 @@ public class WorldStateReplay {
         LOGGER.info("Replaying world state to client...");
         long start = System.currentTimeMillis();
 
+        // Generate a negative teleport ID (vanilla never uses negative IDs)
         int initialTeleportId = -Math.abs(RANDOM.nextInt());
         if (initialTeleportId == 0) initialTeleportId = -1;
 
@@ -46,6 +59,7 @@ public class WorldStateReplay {
         GameMode prevGameMode = mc.interactionManager != null
                 ? mc.interactionManager.getPreviousGameMode() : null;
 
+        // 1. GameJoin
         Set<RegistryKey<World>> dimensionIds = handler.getWorldKeys();
         CommonPlayerSpawnInfo spawnInfo = createSpawnInfo(world, gameMode, prevGameMode, player);
 
@@ -54,39 +68,51 @@ public class WorldStateReplay {
                 1, 16, 16,
                 false, true, false, spawnInfo, false));
 
+        // 2. Respawn to clear lobby world state (clears view entity, prevents falling)
         send(toClient, new PlayerRespawnS2CPacket(spawnInfo, (byte) 0));
 
+        // 3. Difficulty
         send(toClient, new DifficultyS2CPacket(world.getLevelProperties().getDifficulty(),
                 world.getLevelProperties().isDifficultyLocked()));
 
+        // 4. Abilities + slot
         send(toClient, new PlayerAbilitiesS2CPacket(player.getAbilities()));
         send(toClient, new UpdateSelectedSlotS2CPacket(player.getInventory().selectedSlot));
 
+        // 5. Player list (must come before chunks so skins load)
         sendPlayerInfo(toClient, handler);
 
+        // 6. Level info: world border, time, spawn, weather
         sendLevelInfo(toClient, world);
 
+        // 7. Signal chunk loading start
         send(toClient, new GameStateChangeS2CPacket(GameStateChangeS2CPacket.INITIAL_CHUNKS_COMING, 0.0f));
 
+        // 8. Chunks
         sendChunks(toClient, player, world);
 
+        // 9. Health, food, experience
         send(toClient, new HealthUpdateS2CPacket(player.getHealth(),
                 player.getHungerManager().getFoodLevel(),
                 player.getHungerManager().getSaturationLevel()));
         send(toClient, new ExperienceBarUpdateS2CPacket(player.experienceProgress,
                 player.totalExperience, player.experienceLevel));
 
+        // 10. Inventory (full container contents)
         send(toClient, new InventoryS2CPacket(player.playerScreenHandler.syncId,
                 player.playerScreenHandler.nextRevision(),
                 player.playerScreenHandler.getStacks(),
                 player.playerScreenHandler.getCursorStack()));
 
+        // 11. Entities
         sendEntities(toClient, world, player);
 
+        // 12. Initial teleport with our negative ID — client must confirm this
         send(toClient, new PlayerPositionLookS2CPacket(initialTeleportId,
                 new PlayerPosition(player.getPos(), Vec3d.ZERO, player.getYaw(), player.getPitch()),
                 Set.of()));
 
+        // 13. Motion
         send(toClient, new EntityVelocityUpdateS2CPacket(player));
 
         long elapsed = System.currentTimeMillis() - start;
@@ -131,6 +157,7 @@ public class WorldStateReplay {
                 PlayerListS2CPacket.Action.UPDATE_LATENCY,
                 PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME);
 
+        // Use mixin accessor to set private final fields
         var packet = new PlayerListS2CPacket(
                 EnumSet.of(PlayerListS2CPacket.Action.ADD_PLAYER),
                 Collections.emptyList());
@@ -156,6 +183,8 @@ public class WorldStateReplay {
     }
 
     private static boolean isFlat(ClientWorld.Properties props) {
+        // getSkyDarknessHeight requires a non-null HeightLimitView when flatWorld=true,
+        // so use getHorizonShadingRatio() which doesn't need any parameter
         return props.getHorizonShadingRatio() >= 1.0F;
     }
 
@@ -165,6 +194,7 @@ public class WorldStateReplay {
             if (entity == localPlayer) continue;
 
             try {
+                // Send spawn packet using the full constructor
                 send(toClient, new EntitySpawnS2CPacket(
                         entity.getId(), entity.getUuid(),
                         entity.getX(), entity.getY(), entity.getZ(),
@@ -172,16 +202,20 @@ public class WorldStateReplay {
                         entity.getType(), 0,
                         entity.getVelocity(), entity.getHeadYaw()));
 
+                // Send tracked data (metadata)
                 List<DataTracker.SerializedEntry<?>> entries = entity.getDataTracker().getChangedEntries();
                 if (entries != null && !entries.isEmpty()) {
                     send(toClient, new EntityTrackerUpdateS2CPacket(entity.getId(), entries));
                 }
 
+                // Send velocity
                 send(toClient, new EntityVelocityUpdateS2CPacket(entity));
 
+                // Send head yaw for living entities
                 if (entity instanceof LivingEntity living) {
                     send(toClient, new EntitySetHeadYawS2CPacket(entity, (byte) (living.getHeadYaw() * 256.0f / 360.0f)));
 
+                    // Send equipment
                     var equipment = new ArrayList<com.mojang.datafixers.util.Pair<net.minecraft.entity.EquipmentSlot, net.minecraft.item.ItemStack>>();
                     for (net.minecraft.entity.EquipmentSlot slot : net.minecraft.entity.EquipmentSlot.values()) {
                         var stack = living.getEquippedStack(slot);

@@ -1,6 +1,6 @@
 package eu.client.modules.impl.combat;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.PlayerUpdateEvent;
 import eu.client.modules.Module;
@@ -67,7 +67,7 @@ public class SelfFillModule extends Module {
 
         if (jumpMode.getValue().equalsIgnoreCase("Packet") && burrow.getValue().equalsIgnoreCase("Bypass")) {
             if (!rotatedBypass) {
-                Pingbypass.ROTATION_MANAGER.rotate(RotationUtils.getRotations(WorldUtils.getHitVector(lastPosition, direction)), this);
+                EUClient.ROTATION_MANAGER.rotate(RotationUtils.getRotations(WorldUtils.getHitVector(lastPosition, direction)), this);
                 rotatedBypass = true;
                 ticks = 0;
                 return;
@@ -77,7 +77,7 @@ public class SelfFillModule extends Module {
         }
 
         if (autoSwitch.getValue().equalsIgnoreCase("None") && (!(mc.player.getMainHandStack().getItem() instanceof BlockItem) || (obsidianOnly.getValue() && mc.player.getMainHandStack().getItem() != Items.OBSIDIAN))) {
-            Pingbypass.CHAT_MANAGER.tagged("You are currently not holding any " + (obsidianOnly.getValue() ? "valid " : "") + "blocks.", getName());
+            EUClient.CHAT_MANAGER.tagged("You are currently not holding any " + (obsidianOnly.getValue() ? "valid " : "") + "blocks.", getName());
             setToggled(false);
             return;
         }
@@ -91,7 +91,7 @@ public class SelfFillModule extends Module {
         if (obsidianOnly.getValue()) slot = InventoryUtils.find(Items.OBSIDIAN, 0, autoSwitch.getValue().equalsIgnoreCase("AltSwap") || autoSwitch.getValue().equalsIgnoreCase("AltPickup") ? 35 : 8);
 
         if (!autoSwitch.getValue().equalsIgnoreCase("None") && slot == -1) {
-            Pingbypass.CHAT_MANAGER.tagged("There are currently no " + (obsidianOnly.getValue() ? "valid " : "") + "blocks in your hotbar.", getName());
+            EUClient.CHAT_MANAGER.tagged("There are currently no " + (obsidianOnly.getValue() ? "valid " : "") + "blocks in your hotbar.", getName());
             setToggled(false);
             return;
         }
@@ -127,7 +127,7 @@ public class SelfFillModule extends Module {
         }
 
         if (!mc.player.isOnGround()) {
-            Pingbypass.CHAT_MANAGER.tagged("You are currently in the air.", getName());
+            EUClient.CHAT_MANAGER.tagged("You are currently in the air.", getName());
             setToggled(false);
             return;
         }

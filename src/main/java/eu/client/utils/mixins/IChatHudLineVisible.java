@@ -1,11 +1,11 @@
 package eu.client.utils.mixins;
 
 public interface IChatHudLineVisible {
-    boolean pingbypass$isClientMessage();
+    boolean euclient$isClientMessage();
 
-    void pingbypass$setClientMessage(boolean clientMessage);
+    void euclient$setClientMessage(boolean clientMessage);
 
-    String pingbypass$getClientIdentifier();
+    String euclient$getClientIdentifier();
 
-    void pingbypass$setClientIdentifier(String clientIdentifier);
+    void euclient$setClientIdentifier(String clientIdentifier);
 }

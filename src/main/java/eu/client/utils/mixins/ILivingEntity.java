@@ -1,7 +1,7 @@
 package eu.client.utils.mixins;
 
 public interface ILivingEntity {
-    boolean pingbypass$isStaticPlayerEntity();
+    boolean euclient$isStaticPlayerEntity();
 
-    void pingbypass$setStaticPlayerEntity(boolean staticPlayerEntity);
+    void euclient$setStaticPlayerEntity(boolean staticPlayerEntity);
 }

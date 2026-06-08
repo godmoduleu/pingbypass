@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Registry and dispatcher for the PingBypass custom packet protocol.
+ * Maps packet IDs to factories (for deserialization) and handlers (for processing).
+ * Packets are read from the euclient:pingbypass plugin channel.
+ */
 public class PbProtocolHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PbProtocolHandler.class);
 
@@ -20,21 +25,35 @@ public class PbProtocolHandler {
         registerFactories();
     }
 
-
+    /**
+     * Registers a packet factory and handler for the given packet ID.
+     */
     @SuppressWarnings("unchecked")
     public <T extends PbPacket> void register(int packetId, Function<PacketByteBuf, T> factory, PbPacketHandler<T> handler) {
         factories.put(packetId, (Function<PacketByteBuf, PbPacket>) (Function<?, ?>) factory);
         handlers.put(packetId, handler);
     }
 
+    /**
+     * Registers only a packet factory (no handler yet).
+     * Handlers are registered later when the actual logic is wired up.
+     */
     public <T extends PbPacket> void registerFactory(int packetId, Function<PacketByteBuf, T> factory) {
         factories.put(packetId, (Function<PacketByteBuf, PbPacket>) (Function<?, ?>) factory);
     }
 
+    /**
+     * Registers a handler for an already-registered packet ID.
+     */
     public <T extends PbPacket> void registerHandler(int packetId, PbPacketHandler<T> handler) {
         handlers.put(packetId, handler);
     }
 
+    /**
+     * Reads a VarInt packet ID from the buffer, constructs the packet via the
+     * registered factory, and dispatches it to the registered handler.
+     * Malformed or unknown packets are logged as warnings without crashing.
+     */
     @SuppressWarnings("unchecked")
     public void handle(PacketByteBuf buf, ClientConnection connection) {
         int packetId;
@@ -72,6 +91,11 @@ public class PbProtocolHandler {
         }
     }
 
+    /**
+     * Registers factories for all 10 packet types so they can be deserialized.
+     * Actual handlers are registered later by Tasks 12.1 and 12.2.
+     * C2S_STAY handler is registered here as it's handled in Task 10.1.
+     */
     private void registerFactories() {
         registerFactory(C2SJoinPacket.ID, C2SJoinPacket::new);
         registerFactory(S2CPasswordRequestPacket.ID, S2CPasswordRequestPacket::new);
@@ -85,6 +109,10 @@ public class PbProtocolHandler {
         registerFactory(C2SStayPacket.ID, C2SStayPacket::new);
     }
 
+    /**
+     * Registers the C2S_STAY handler that toggles the stayConnected flag on the ProxyServer.
+     * Called during proxy initialization when the ProxyServer instance is available.
+     */
     public void registerStayHandler(eu.client.pingbypass.server.ProxyServer proxyServer) {
         register(C2SStayPacket.ID, C2SStayPacket::new, (packet, connection) -> {
             proxyServer.setStayConnected(packet.isStay());
@@ -92,6 +120,13 @@ public class PbProtocolHandler {
         });
     }
 
+    /**
+     * Registers handlers for C2S_MODULE_TOGGLE (ID 3) and C2S_SETTING_CHANGE (ID 4).
+     * On toggle: looks up the module, toggles it, sends S2C_MODULE_STATE back (or S2C_ERROR).
+     * On setting change: looks up module and setting, applies value, sends S2C_SETTING_STATE back (or S2C_ERROR).
+     *
+     * <p><b>Validates: Requirements 9.2, 9.3, 9.4</b></p>
+     */
     public void registerModuleHandlers(eu.client.pingbypass.modules.ProxyModuleManager moduleManager) {
         register(C2SModuleTogglePacket.ID, C2SModuleTogglePacket::new, (packet, connection) -> {
             eu.client.modules.Module module = moduleManager.getModule(packet.getModuleName());
@@ -132,6 +167,10 @@ public class PbProtocolHandler {
         });
     }
 
+    /**
+     * Deserializes and applies a string value to a Setting based on its runtime type.
+     * Supports BooleanSetting, NumberSetting, StringSetting, ModeSetting, and ColorSetting.
+     */
     private void applySettingValue(eu.client.settings.Setting setting, String value) {
         if (setting instanceof eu.client.settings.impl.BooleanSetting boolSetting) {
             boolSetting.setValue(Boolean.parseBoolean(value));
@@ -151,6 +190,7 @@ public class PbProtocolHandler {
         } else if (setting instanceof eu.client.settings.impl.ModeSetting modeSetting) {
             modeSetting.setValue(value);
         } else if (setting instanceof eu.client.settings.impl.ColorSetting colorSetting) {
+            // Format: "r,g,b,a,sync,rainbow"
             String[] parts = value.split(",");
             if (parts.length == 6) {
                 try {

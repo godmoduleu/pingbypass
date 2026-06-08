@@ -2,7 +2,7 @@ package eu.client.managers;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.*;
 import eu.client.utils.IMinecraft;
@@ -29,7 +29,7 @@ public class WorldManager implements IMinecraft {
     @Getter private final Timer placeTimer = new Timer();
 
     public WorldManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
 
         BlockPos origin = BlockPos.ORIGIN;
         Set<BlockPos> positions = new TreeSet<>((o, p) -> {
@@ -77,7 +77,7 @@ public class WorldManager implements IMinecraft {
 
             if (deadPlayers.contains(player.getUuid())) continue;
 
-            Pingbypass.EVENT_HANDLER.post(new PlayerDeathEvent(player));
+            EUClient.EVENT_HANDLER.post(new PlayerDeathEvent(player));
             deadPlayers.add(player.getUuid());
 
             poppedTotems.remove(player.getUuid());
@@ -94,7 +94,7 @@ public class WorldManager implements IMinecraft {
             int pops = poppedTotems.getOrDefault(player.getUuid(), 0);
             poppedTotems.put(player.getUuid(), ++pops);
 
-            Pingbypass.EVENT_HANDLER.post(new PlayerPopEvent(player, pops));
+            EUClient.EVENT_HANDLER.post(new PlayerPopEvent(player, pops));
         }
     }
 

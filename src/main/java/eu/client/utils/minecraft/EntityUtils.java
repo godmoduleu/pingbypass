@@ -1,6 +1,7 @@
 package eu.client.utils.minecraft;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
+import eu.client.modules.impl.miscellaneous.FakePlayerModule;
 import eu.client.utils.IMinecraft;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.PlayerListEntry;
@@ -54,10 +55,12 @@ public class EntityUtils implements IMinecraft {
     }
 
     public static boolean isBot(PlayerEntity player) {
+        if (EUClient.MODULE_MANAGER.getModule(FakePlayerModule.class).isToggled() && player == EUClient.MODULE_MANAGER.getModule(FakePlayerModule.class).getPlayer()) {
+            return false;
+        }
+
         PlayerListEntry entry = mc.getNetworkHandler().getPlayerListEntry(player.getUuid());
-        return entry == null || entry.getProfile() == null
-                || player.getUuid().toString().startsWith(player.getName().getString())
-                || !player.getGameProfile().getName().equals(player.getName().getString());
+        return entry == null || entry.getProfile() == null || player.getUuid().toString().startsWith(player.getName().getString()) || !player.getGameProfile().getName().equals(player.getName().getString());
     }
 
     public static int getLatency(PlayerEntity player) {
@@ -80,19 +83,15 @@ public class EntityUtils implements IMinecraft {
     }
 
     public static double getSpeed(Entity entity, SpeedUnit unit) {
-        double speed = Math.sqrt(MathHelper.square(Math.abs(entity.getX() - entity.lastRenderX))
-                + MathHelper.square(Math.abs(entity.getZ() - entity.lastRenderZ)));
+        double speed = Math.sqrt(MathHelper.square(Math.abs(entity.getX() - entity.lastRenderX)) + MathHelper.square(Math.abs(entity.getZ() - entity.lastRenderZ)));
 
-        if (unit == SpeedUnit.KILOMETERS)
-            return (speed * 3.6 * Pingbypass.WORLD_MANAGER.getTimerMultiplier()) * 20;
-        else
-            return speed / 0.05 * Pingbypass.WORLD_MANAGER.getTimerMultiplier();
+        if (unit == SpeedUnit.KILOMETERS) return (speed * 3.6 * EUClient.WORLD_MANAGER.getTimerMultiplier()) * 20;
+        else return speed / 0.05 * EUClient.WORLD_MANAGER.getTimerMultiplier();
     }
 
     public static boolean hasNegativeEffects(PlayerEntity player) {
         for (StatusEffectInstance statusEffectInstance : new ArrayList<>(player.getStatusEffects())) {
-            if (!statusEffectInstance.getEffectType().value().isBeneficial())
-                return true;
+            if (!statusEffectInstance.getEffectType().value().isBeneficial()) return true;
         }
 
         return false;
@@ -108,15 +107,11 @@ public class EntityUtils implements IMinecraft {
     public static LivingEntity getClosestEntity(Entity entity) {
         LivingEntity closestEntity = null;
         for (Entity e : mc.world.getEntities()) {
-            if (!(e instanceof LivingEntity livingEntity))
-                continue;
+            if (!(e instanceof LivingEntity livingEntity)) continue;
 
-            if (!(entity.distanceTo(livingEntity) <= 10.0f))
-                continue;
-            if (livingEntity.getHealth() <= 0.0f || !livingEntity.isAlive())
-                continue;
-            if (entity == livingEntity)
-                continue;
+            if (!(entity.distanceTo(livingEntity) <= 10.0f)) continue;
+            if (livingEntity.getHealth() <= 0.0f || !livingEntity.isAlive()) continue;
+            if (entity == livingEntity) continue;
 
             if (closestEntity == null) {
                 closestEntity = livingEntity;
@@ -134,27 +129,22 @@ public class EntityUtils implements IMinecraft {
     public static Direction getPearlDirection(EnderPearlEntity pearl) {
         Direction direction = pearl.getHorizontalFacing();
 
-        if (direction.equals(Direction.WEST))
-            return Direction.EAST;
-        else if (direction.equals(Direction.EAST))
-            return Direction.WEST;
+        if (direction.equals(Direction.WEST)) return Direction.EAST;
+        else if (direction.equals(Direction.EAST)) return Direction.WEST;
 
         return direction;
     }
 
     public static boolean isThrowable(Item item) {
-        return item instanceof EnderPearlItem || item instanceof TridentItem || item instanceof ExperienceBottleItem
-                || item instanceof SnowballItem || item instanceof EggItem || item instanceof SplashPotionItem
-                || item instanceof LingeringPotionItem;
+        return item instanceof EnderPearlItem || item instanceof TridentItem || item instanceof ExperienceBottleItem || item instanceof SnowballItem || item instanceof EggItem || item instanceof SplashPotionItem || item instanceof LingeringPotionItem;
     }
 
     public static boolean isInWeb(Entity entity) {
-        for (float x : new float[] { 0, 0.3F, -0.3f }) {
-            for (float z : new float[] { 0, 0.3F, -0.3f }) {
-                for (int y : new int[] { -1, 0, 1, 2 }) {
+        for (float x : new float[]{0, 0.3F, -0.3f}) {
+            for (float z : new float[]{0, 0.3F, -0.3f}) {
+                for (int y : new int[]{-1, 0, 1, 2}) {
                     BlockPos pos = BlockPos.ofFloored(entity.getX() + x, entity.getY(), entity.getZ() + z).up(y);
-                    if (new Box(pos).intersects(entity.getBoundingBox())
-                            && mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB) {
+                    if (new Box(pos).intersects(entity.getBoundingBox()) && mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB) {
                         return true;
                     }
                 }

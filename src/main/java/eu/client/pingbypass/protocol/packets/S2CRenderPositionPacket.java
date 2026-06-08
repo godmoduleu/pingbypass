@@ -5,6 +5,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Server → Client: Sync the AutoCrystal render position from proxy to client.
+ * Packet ID: 10
+ * Payload: hasPosition (Boolean), [x (Int), y (Int), z (Int)] if hasPosition
+ */
 public class S2CRenderPositionPacket extends PbPacket {
     public static final int ID = 10;
 

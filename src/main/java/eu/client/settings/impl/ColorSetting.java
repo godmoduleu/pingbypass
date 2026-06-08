@@ -3,11 +3,12 @@ package eu.client.settings.impl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
+import eu.client.modules.impl.core.ColorModule;
 import eu.client.settings.Setting;
+import eu.client.utils.color.ColorUtils;
 
-@Getter
-@Setter
+@Getter @Setter
 public class ColorSetting extends Setting {
     private Color value;
     private final Color defaultValue;
@@ -37,7 +38,17 @@ public class ColorSetting extends Setting {
     }
 
     public java.awt.Color getColor() {
-        return value.getColor();
+        if (isSync()) {
+            return ColorUtils.getGlobalColor(getAlpha());
+        } else {
+            if (isRainbow()) {
+                if (this == EUClient.MODULE_MANAGER.getModule(ColorModule.class).color) return ColorUtils.getRainbow(255);
+                return ColorUtils.getRainbow(getAlpha());
+            } else {
+                if (this == EUClient.MODULE_MANAGER.getModule(ColorModule.class).color) return ColorUtils.getColor(value.getColor(), 255);
+                return value.getColor();
+            }
+        }
     }
 
     public void setColor(java.awt.Color color) {
@@ -98,9 +109,7 @@ public class ColorSetting extends Setting {
         }
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
+    @Getter @Setter @AllArgsConstructor
     public static class Color {
         private java.awt.Color color;
         private boolean sync;

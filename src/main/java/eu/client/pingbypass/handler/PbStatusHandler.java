@@ -1,6 +1,6 @@
 package eu.client.pingbypass.handler;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.pingbypass.server.ProxyServer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
@@ -72,7 +72,7 @@ public class PbStatusHandler implements ServerQueryPacketListener {
     private Text buildDescription() {
         MinecraftClient mc = MinecraftClient.getInstance();
         StringBuilder motd = new StringBuilder();
-        motd.append("§dPingbypass PingBypass§r\n");
+        motd.append("§dEUClient PingBypass§r\n");
 
         if (mc.getNetworkHandler() != null && mc.player != null && mc.world != null) {
             // Proxy is connected to a server

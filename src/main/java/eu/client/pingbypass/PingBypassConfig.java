@@ -9,6 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+/**
+ * Loads and exposes PingBypass configuration from euclient/pingbypass.properties.
+ * System properties (-Dpb.server=true etc.) override file values.
+ */
 public class PingBypassConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(PingBypassConfig.class);
 
@@ -26,10 +30,18 @@ public class PingBypassConfig {
     private final Path configPath;
     private boolean loaded;
 
+    /**
+     * Creates a PingBypassConfig that loads from the given run directory.
+     *
+     * @param runDirectory the Minecraft run directory
+     */
     public PingBypassConfig(Path runDirectory) {
-        this.configPath = runDirectory.resolve(Paths.get("pingbypass", "pingbypass.properties"));
+        this.configPath = runDirectory.resolve(Paths.get("euclient", "pingbypass.properties"));
     }
 
+    /**
+     * Loads properties from the config file, creating it with defaults if it does not exist.
+     */
     public void load() {
         try {
             Path parentDir = configPath.getParent();
@@ -62,14 +74,23 @@ public class PingBypassConfig {
         }
     }
 
+    /**
+     * Returns whether this instance is configured as a server/proxy.
+     */
     public boolean isServer() {
         return Boolean.parseBoolean(getProperty(KEY_SERVER, DEFAULT_SERVER));
     }
 
+    /**
+     * Returns the configured IP address.
+     */
     public String getIp() {
         return getProperty(KEY_IP, DEFAULT_IP);
     }
 
+    /**
+     * Returns the configured port, falling back to 25565 on malformed values.
+     */
     public int getPort() {
         String portStr = getProperty(KEY_PORT, DEFAULT_PORT);
         try {
@@ -85,15 +106,28 @@ public class PingBypassConfig {
         }
     }
 
+    /**
+     * Returns the configured password.
+     */
     public String getPassword() {
         return getProperty(KEY_PASSWORD, DEFAULT_PASSWORD);
     }
 
+    /**
+     * Returns true if a non-empty password is configured.
+     */
     public boolean hasPassword() {
         String password = getPassword();
         return password != null && !password.isEmpty();
     }
 
+    /**
+     * Returns the value for the given property key. System properties override file values.
+     *
+     * @param key          the property key
+     * @param defaultValue the default value if not found
+     * @return the resolved property value
+     */
     public String getProperty(String key, String defaultValue) {
         String systemValue = System.getProperty(key);
         if (systemValue != null) {
@@ -102,6 +136,10 @@ public class PingBypassConfig {
         return properties.getProperty(key, defaultValue);
     }
 
+    /**
+     * Serializes the current effective configuration to a Properties object.
+     * System property overrides are reflected in the output.
+     */
     public Properties toProperties() {
         Properties result = new Properties();
         result.setProperty(KEY_SERVER, String.valueOf(isServer()));
@@ -111,6 +149,9 @@ public class PingBypassConfig {
         return result;
     }
 
+    /**
+     * Returns whether the config has been loaded.
+     */
     public boolean isLoaded() {
         return loaded;
     }

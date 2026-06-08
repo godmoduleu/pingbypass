@@ -24,7 +24,7 @@ public class RegistryLoaderMixin {
         ),
         ordinal = 0
     )
-    private static Map<RegistryKey<?>, Exception> pingbypass$clearErrors(Map<RegistryKey<?>, Exception> errors) {
+    private static Map<RegistryKey<?>, Exception> euclient$clearErrors(Map<RegistryKey<?>, Exception> errors) {
         if (PingBypassFlags.tolerateRegistryErrors && !errors.isEmpty()) {
             PingBypassFlags.tolerateRegistryErrors = false;
             errors.clear();

@@ -1,7 +1,7 @@
 package eu.client.pingbypass.handler;
 
 import com.mojang.authlib.GameProfile;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.pingbypass.protocol.PbCustomPayload;
 import eu.client.pingbypass.server.ProxyServer;
 import net.minecraft.network.ClientConnection;
@@ -106,7 +106,7 @@ public class PbPasswordHandler implements ServerPlayPacketListener, TickablePack
     }
 
     private void handlePassword(String password) {
-        String expected = Pingbypass.PINGBYPASS_CONFIG.getPassword();
+        String expected = EUClient.PINGBYPASS_CONFIG.getPassword();
         if (expected.equals(password)) {
             LOGGER.info("Password accepted for {}", profile.getName());
             // Transition to PbWaitingHandler (proxy not connected to server yet)

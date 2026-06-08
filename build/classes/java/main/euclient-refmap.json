@@ -1,0 +1,878 @@
+{
+  "mappings": {
+    "eu/client/mixins/AbstractSignBlockEntityRendererMixin": {
+      "renderText": "Lnet/minecraft/class_10529;method_65828(Lnet/minecraft/class_2338;Lnet/minecraft/class_8242;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;IIIZ)V"
+    },
+    "eu/client/mixins/ArmorFeatureRendererMixin": {
+      "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/BipedEntityRenderState;FF)V": "Lnet/minecraft/class_970;method_17157(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;ILnet/minecraft/class_10034;FF)V"
+    },
+    "eu/client/mixins/BackgroundRendererMixin": {
+      "Lnet/minecraft/client/render/Fog;<init>(FFLnet/minecraft/client/render/FogShape;FFFF)V": "Lnet/minecraft/class_9958;<init>(FFLnet/minecraft/class_6854;FFFF)V",
+      "applyFog": "Lnet/minecraft/class_758;method_3211(Lnet/minecraft/class_4184;Lnet/minecraft/class_758$class_4596;Lorg/joml/Vector4f;FZF)Lnet/minecraft/class_9958;",
+      "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;": "Lnet/minecraft/class_758;method_42588(Lnet/minecraft/class_1297;F)Lnet/minecraft/class_758$class_7286;"
+    },
+    "eu/client/mixins/BlockBreakingInfoMixin": {
+      "compareTo(Lnet/minecraft/entity/player/BlockBreakingInfo;)I": "Lnet/minecraft/class_3191;method_23269(Lnet/minecraft/class_3191;)I"
+    },
+    "eu/client/mixins/BlockEntityRenderDispatcherMixin": {
+      "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V": "Lnet/minecraft/class_824;method_3555(Lnet/minecraft/class_2586;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+      "render(Lnet/minecraft/client/render/block/entity/BlockEntityRenderer;Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V": "Lnet/minecraft/class_824;method_23079(Lnet/minecraft/class_827;Lnet/minecraft/class_2586;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+    },
+    "eu/client/mixins/BlockMixin": {
+      "getSlipperiness": "Lnet/minecraft/class_2248;method_9499()F"
+    },
+    "eu/client/mixins/BossBarHudMixin": {
+      "render": "Lnet/minecraft/class_337;method_1796(Lnet/minecraft/class_332;)V"
+    },
+    "eu/client/mixins/CameraMixin": {
+      "Lnet/minecraft/client/render/Camera;clipToSpace(F)F": "Lnet/minecraft/class_4184;method_19318(F)F",
+      "Lnet/minecraft/client/render/Camera;setPos(DDD)V": "Lnet/minecraft/class_4184;method_19327(DDD)V",
+      "Lnet/minecraft/client/render/Camera;setRotation(FF)V": "Lnet/minecraft/class_4184;method_19325(FF)V",
+      "clipToSpace": "Lnet/minecraft/class_4184;method_19318(F)F",
+      "getSubmersionType": "Lnet/minecraft/class_4184;method_19334()Lnet/minecraft/class_5636;",
+      "update": "Lnet/minecraft/class_4184;method_19321(Lnet/minecraft/class_1922;Lnet/minecraft/class_1297;ZZF)V"
+    },
+    "eu/client/mixins/ChatHudMixin": {
+      "Lnet/minecraft/client/gui/hud/ChatHudLine;<init>(ILnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V": "Lnet/minecraft/class_303;<init>(ILnet/minecraft/class_2561;Lnet/minecraft/class_7469;Lnet/minecraft/class_7591;)V",
+      "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V": "Lnet/minecraft/class_338;method_44811(Lnet/minecraft/class_2561;Lnet/minecraft/class_7469;Lnet/minecraft/class_7591;)V",
+      "addVisibleMessage": "Lnet/minecraft/class_338;method_1815(Lnet/minecraft/class_303;)V"
+    },
+    "eu/client/mixins/ChatScreenMixin": {
+      "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V": "Lnet/minecraft/class_332;method_25294(IIIII)V",
+      "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendChatCommand(Ljava/lang/String;)V": "Lnet/minecraft/class_634;method_45730(Ljava/lang/String;)V",
+      "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendChatMessage(Ljava/lang/String;)V": "Lnet/minecraft/class_634;method_45729(Ljava/lang/String;)V",
+      "render": "Lnet/minecraft/class_408;method_25394(Lnet/minecraft/class_332;IIF)V",
+      "sendMessage": "Lnet/minecraft/class_408;method_44056(Ljava/lang/String;Z)V"
+    },
+    "eu/client/mixins/ClientConnectionMixin": {
+      "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V": "Lnet/minecraft/class_2535;method_10770(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V",
+      "disconnect(Lnet/minecraft/network/DisconnectionInfo;)V": "Lnet/minecraft/class_2535;method_60924(Lnet/minecraft/class_9812;)V",
+      "exceptionCaught": "Lnet/minecraft/class_2535;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V",
+      "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V": "Lnet/minecraft/class_2535;method_10752(Lnet/minecraft/class_2596;Lnet/minecraft/class_7648;)V"
+    },
+    "eu/client/mixins/ClientPlayNetworkHandlerMixin": {
+      "onGameJoin": "Lnet/minecraft/class_634;method_11120(Lnet/minecraft/class_2678;)V"
+    },
+    "eu/client/mixins/ClientPlayerEntityMixin": {
+      "Lnet/minecraft/client/network/AbstractClientPlayerEntity;tick()V": "Lnet/minecraft/class_742;method_5773()V",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z": "Lnet/minecraft/class_746;method_6115()Z",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;lastPitch:F": "Lnet/minecraft/class_746;field_3925:F",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;lastYaw:F": "Lnet/minecraft/class_746;field_3941:F",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;tickables:Ljava/util/List;": "Lnet/minecraft/class_746;field_3933:Ljava/util/List;",
+      "canStartSprinting": "Lnet/minecraft/class_746;method_48300()Z",
+      "move": "Lnet/minecraft/class_746;method_5784(Lnet/minecraft/class_1313;Lnet/minecraft/class_243;)V",
+      "pushOutOfBlocks": "Lnet/minecraft/class_746;method_30673(DD)V",
+      "sendMovementPackets": "Lnet/minecraft/class_746;method_3136()V",
+      "setCurrentHand": "Lnet/minecraft/class_746;method_6019(Lnet/minecraft/class_1268;)V",
+      "swingHand": "Lnet/minecraft/class_746;method_6104(Lnet/minecraft/class_1268;)V",
+      "tick": "Lnet/minecraft/class_746;method_5773()V",
+      "tickMovement": "Lnet/minecraft/class_746;method_6007()V",
+      "tickNausea": "Lnet/minecraft/class_746;method_60887(Z)V"
+    },
+    "eu/client/mixins/ClientPlayerInteractionManagerMixin": {
+      "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V": "Lnet/minecraft/class_636;method_41931(Lnet/minecraft/class_638;Lnet/minecraft/class_7204;)V",
+      "attackBlock": "Lnet/minecraft/class_636;method_2910(Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)Z",
+      "attackEntity": "Lnet/minecraft/class_636;method_2918(Lnet/minecraft/class_1657;Lnet/minecraft/class_1297;)V",
+      "breakBlock": "Lnet/minecraft/class_636;method_2899(Lnet/minecraft/class_2338;)Z",
+      "interactBlock": "Lnet/minecraft/class_636;method_2896(Lnet/minecraft/class_746;Lnet/minecraft/class_1268;Lnet/minecraft/class_3965;)Lnet/minecraft/class_1269;",
+      "stopUsingItem": "Lnet/minecraft/class_636;method_2897(Lnet/minecraft/class_1657;)V",
+      "syncSelectedSlot": "Lnet/minecraft/class_636;method_2911()V"
+    },
+    "eu/client/mixins/ClientWorldMixin": {
+      "addEntity": "Lnet/minecraft/class_638;method_53875(Lnet/minecraft/class_1297;)V",
+      "getSkyColor": "Lnet/minecraft/class_638;method_23777(Lnet/minecraft/class_243;F)I"
+    },
+    "eu/client/mixins/CobwebBlockMixin": {
+      "onEntityCollision": "Lnet/minecraft/class_2560;method_9548(Lnet/minecraft/class_2680;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_1297;)V"
+    },
+    "eu/client/mixins/ConnectScreenMixin": {
+      "connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Lnet/minecraft/client/network/CookieStorage;)V": "Lnet/minecraft/class_412;method_2130(Lnet/minecraft/class_310;Lnet/minecraft/class_639;Lnet/minecraft/class_642;Lnet/minecraft/class_9112;)V"
+    },
+    "eu/client/mixins/DisconnectedScreenMixin": {
+      "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;refreshPositions()V": "Lnet/minecraft/class_8667;method_48222()V",
+      "init": "Lnet/minecraft/class_419;method_25426()V"
+    },
+    "eu/client/mixins/DownloadingTerrainScreenMixin": {
+      "renderBackground": "Lnet/minecraft/class_434;method_25420(Lnet/minecraft/class_332;IIF)V"
+    },
+    "eu/client/mixins/DrawContextMixin": {
+      "drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I": "Lnet/minecraft/class_332;method_51433(Lnet/minecraft/class_327;Ljava/lang/String;IIIZ)I",
+      "drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/OrderedText;IIIZ)I": "Lnet/minecraft/class_332;method_51430(Lnet/minecraft/class_327;Lnet/minecraft/class_5481;IIIZ)I"
+    },
+    "eu/client/mixins/EndCrystalEntityModelMixin": {
+      "Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;age:F": "Lnet/minecraft/class_10014;field_53328:F",
+      "setAngles(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;)V": "Lnet/minecraft/class_9946;method_62083(Lnet/minecraft/class_10014;)V"
+    },
+    "eu/client/mixins/EndCrystalEntityRendererMixin": {
+      "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V": "Lnet/minecraft/class_4587;method_22905(FFF)V",
+      "getYOffset": "Lnet/minecraft/class_892;method_23155(F)F",
+      "render(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_892;method_3908(Lnet/minecraft/class_10014;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V"
+    },
+    "eu/client/mixins/EntityMixin": {
+      "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;": "Lnet/minecraft/class_2680;method_26204()Lnet/minecraft/class_2248;",
+      "Lnet/minecraft/entity/Entity;getVelocity()Lnet/minecraft/util/math/Vec3d;": "Lnet/minecraft/class_1297;method_18798()Lnet/minecraft/class_243;",
+      "getPitch*": "Lnet/minecraft/class_1297;method_5695(F)F",
+      "getVelocityMultiplier": "Lnet/minecraft/class_1297;method_23326()F",
+      "getYaw*": "Lnet/minecraft/class_1297;method_5705(F)F",
+      "pushAwayFrom": "Lnet/minecraft/class_1297;method_5697(Lnet/minecraft/class_1297;)V",
+      "setPitch": "Lnet/minecraft/class_1297;method_36457(F)V",
+      "setYaw": "Lnet/minecraft/class_1297;method_36456(F)V",
+      "updateMovementInFluid": "Lnet/minecraft/class_1297;method_5692(Lnet/minecraft/class_6862;D)Z",
+      "updateVelocity": "Lnet/minecraft/class_1297;method_5724(FLnet/minecraft/class_243;)V"
+    },
+    "eu/client/mixins/EntityRenderDispatcherMixin": {
+      "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;renderFire(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/render/entity/state/EntityRenderState;Lorg/joml/Quaternionf;)V": "Lnet/minecraft/class_898;method_23165(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;Lnet/minecraft/class_10017;Lorg/joml/Quaternionf;)V",
+      "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V": "Lnet/minecraft/class_898;method_3954(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;ILnet/minecraft/class_897;)V"
+    },
+    "eu/client/mixins/EntityRendererMixin": {
+      "getDisplayName": "Lnet/minecraft/class_897;method_62426(Lnet/minecraft/class_1297;)Lnet/minecraft/class_2561;"
+    },
+    "eu/client/mixins/FireworkRocketEntityMixin": {
+      "Lnet/minecraft/entity/projectile/FireworkRocketEntity;updateRotation()V": "Lnet/minecraft/class_1671;method_26962()V",
+      "tick": "Lnet/minecraft/class_1671;method_5773()V"
+    },
+    "eu/client/mixins/FishingBobberEntityMixin": {
+      "Lnet/minecraft/entity/projectile/FishingBobberEntity;pullHookedEntity(Lnet/minecraft/entity/Entity;)V": "Lnet/minecraft/class_1536;method_6954(Lnet/minecraft/class_1297;)V",
+      "handleStatus": "Lnet/minecraft/class_1536;method_5711(B)V"
+    },
+    "eu/client/mixins/GameMenuScreenMixin": {
+      "init": "Lnet/minecraft/class_433;method_25426()V"
+    },
+    "eu/client/mixins/GameRendererMixin": {
+      "Lnet/minecraft/client/render/GameRenderer;findCrosshairTarget(Lnet/minecraft/entity/Entity;DDF)Lnet/minecraft/util/hit/HitResult;": "Lnet/minecraft/class_757;method_56153(Lnet/minecraft/class_1297;DDF)Lnet/minecraft/class_239;",
+      "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V": "Lnet/minecraft/class_761;method_22710(Lnet/minecraft/class_9922;Lnet/minecraft/class_9779;ZLnet/minecraft/class_4184;Lnet/minecraft/class_757;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
+      "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;": "Lnet/minecraft/class_1675;method_18075(Lnet/minecraft/class_1297;Lnet/minecraft/class_243;Lnet/minecraft/class_243;Lnet/minecraft/class_238;Ljava/util/function/Predicate;D)Lnet/minecraft/class_3966;",
+      "findCrosshairTarget": "Lnet/minecraft/class_757;method_56153(Lnet/minecraft/class_1297;DDF)Lnet/minecraft/class_239;",
+      "getBasicProjectionMatrix": "Lnet/minecraft/class_757;method_22973(F)Lorg/joml/Matrix4f;",
+      "getFov": "Lnet/minecraft/class_757;method_3196(Lnet/minecraft/class_4184;FZ)F",
+      "renderWorld": "Lnet/minecraft/class_757;method_3188(Lnet/minecraft/class_9779;)V",
+      "showFloatingItem": "Lnet/minecraft/class_757;method_3189(Lnet/minecraft/class_1799;)V",
+      "tiltViewWhenHurt": "Lnet/minecraft/class_757;method_3198(Lnet/minecraft/class_4587;F)V",
+      "updateCrosshairTarget": "Lnet/minecraft/class_757;method_3190(F)V"
+    },
+    "eu/client/mixins/GlyphMixin": {
+      "getShadowOffset": "Lnet/minecraft/class_379;method_16800()F"
+    },
+    "eu/client/mixins/HandledScreenMixin": {
+      "drawMouseoverTooltip": "Lnet/minecraft/class_465;method_2380(Lnet/minecraft/class_332;II)V",
+      "render": "Lnet/minecraft/class_465;method_25394(Lnet/minecraft/class_332;IIF)V"
+    },
+    "eu/client/mixins/HeldItemRendererMixin": {
+      "Lnet/minecraft/client/render/item/HeldItemRenderer;renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_759;method_3228(Lnet/minecraft/class_742;FFLnet/minecraft/class_1268;FLnet/minecraft/class_1799;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+      "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F": "Lnet/minecraft/class_3532;method_16439(FFF)F",
+      "applyEatOrDrinkTransformation": "Lnet/minecraft/class_759;method_3218(Lnet/minecraft/class_4587;FLnet/minecraft/class_1306;Lnet/minecraft/class_1799;Lnet/minecraft/class_1657;)V",
+      "applySwingOffset": "Lnet/minecraft/class_759;method_3217(Lnet/minecraft/class_4587;Lnet/minecraft/class_1306;F)V",
+      "renderFirstPersonItem": "Lnet/minecraft/class_759;method_3228(Lnet/minecraft/class_742;FFLnet/minecraft/class_1268;FLnet/minecraft/class_1799;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+      "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V": "Lnet/minecraft/class_759;method_22976(FLnet/minecraft/class_4587;Lnet/minecraft/class_4597$class_4598;Lnet/minecraft/class_746;I)V"
+    },
+    "eu/client/mixins/InGameHudMixin": {
+      "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/util/Identifier;F)V": "Lnet/minecraft/class_329;method_31977(Lnet/minecraft/class_332;Lnet/minecraft/class_2960;F)V",
+      "render": "Lnet/minecraft/class_329;method_1753(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+      "renderCrosshair": "Lnet/minecraft/class_329;method_1736(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+      "renderMiscOverlays": "Lnet/minecraft/class_329;method_55798(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+      "renderPortalOverlay": "Lnet/minecraft/class_329;method_1746(Lnet/minecraft/class_332;F)V",
+      "renderStatusEffectOverlay": "Lnet/minecraft/class_329;method_1765(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+      "renderVignetteOverlay": "Lnet/minecraft/class_329;method_1735(Lnet/minecraft/class_332;Lnet/minecraft/class_1297;)V"
+    },
+    "eu/client/mixins/InGameOverlayRendererMixin": {
+      "renderFireOverlay": "Lnet/minecraft/class_4603;method_23070(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+      "renderInWallOverlay": "Lnet/minecraft/class_4603;method_23068(Lnet/minecraft/class_1058;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+      "renderUnderwaterOverlay": "Lnet/minecraft/class_4603;method_23069(Lnet/minecraft/class_310;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+    },
+    "eu/client/mixins/InactivityFpsLimiterMixin": {
+      "update": "Lnet/minecraft/class_9919;method_61937()I"
+    },
+    "eu/client/mixins/ItemRendererMixin": {
+      "Lnet/minecraft/client/render/item/ItemRenderer;renderBakedItemModel(Lnet/minecraft/client/render/model/BakedModel;[IIILnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;)V": "Lnet/minecraft/class_918;method_23182(Lnet/minecraft/class_1087;[IIILnet/minecraft/class_4587;Lnet/minecraft/class_4588;)V",
+      "renderItem(Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II[ILnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/item/ItemRenderState$Glint;)V": "Lnet/minecraft/class_918;method_62476(Lnet/minecraft/class_811;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;II[ILnet/minecraft/class_1087;Lnet/minecraft/class_1921;Lnet/minecraft/class_10444$class_10445;)V"
+    },
+    "eu/client/mixins/KeyboardInputMixin": {
+      "tick": "Lnet/minecraft/class_743;method_3129()V"
+    },
+    "eu/client/mixins/KeyboardMixin": {
+      "onKey": "Lnet/minecraft/class_309;method_1466(JIIII)V"
+    },
+    "eu/client/mixins/LightmapTextureManagerMixin": {
+      "Lnet/minecraft/client/gl/SimpleFramebuffer;endWrite()V": "Lnet/minecraft/class_6367;method_1240()V",
+      "getDarknessFactor(F)F": "Lnet/minecraft/class_765;method_42597(F)F",
+      "update": "Lnet/minecraft/class_765;method_3313(F)V"
+    },
+    "eu/client/mixins/LimbAnimatorMixin": {
+      "getPos()F": "Lnet/minecraft/class_8080;method_48569()F",
+      "getPos(F)F": "Lnet/minecraft/class_8080;method_48572(F)F",
+      "getSpeed()F": "Lnet/minecraft/class_8080;method_48566()F",
+      "getSpeed(F)F": "Lnet/minecraft/class_8080;method_48570(F)F"
+    },
+    "eu/client/mixins/LivingEntityMixin": {
+      "Lnet/minecraft/entity/Entity;setSprinting(Z)V": "Lnet/minecraft/class_1297;method_5728(Z)V",
+      "Lnet/minecraft/entity/LivingEntity;getStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Lnet/minecraft/entity/effect/StatusEffectInstance;": "Lnet/minecraft/class_1309;method_6112(Lnet/minecraft/class_6880;)Lnet/minecraft/class_1293;",
+      "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z": "Lnet/minecraft/class_1309;method_6059(Lnet/minecraft/class_6880;)Z",
+      "Lnet/minecraft/item/ItemStack;finishUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;": "Lnet/minecraft/class_1799;method_7910(Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;)Lnet/minecraft/class_1799;",
+      "Lnet/minecraft/util/profiler/Profiler;pop()V": "Lnet/minecraft/class_3695;method_15407()V",
+      "consumeItem": "Lnet/minecraft/class_1309;method_6040()V",
+      "getHandSwingDuration": "Lnet/minecraft/class_1309;method_6028()I",
+      "getStepHeight": "Lnet/minecraft/class_1309;method_49476()F",
+      "jump": "Lnet/minecraft/class_1309;method_6043()V",
+      "setSprinting": "Lnet/minecraft/class_1309;method_5728(Z)V",
+      "tickMovement": "Lnet/minecraft/class_1309;method_6007()V",
+      "travelMidAir": "Lnet/minecraft/class_1309;method_61428(Lnet/minecraft/class_243;)V"
+    },
+    "eu/client/mixins/LivingEntityRendererMixin": {
+      "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V": "Lnet/minecraft/class_583;method_62100(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;III)V",
+      "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V": "Lnet/minecraft/class_4587;method_22905(FFF)V",
+      "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_922;method_4054(Lnet/minecraft/class_10042;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V"
+    },
+    "eu/client/mixins/MinecraftClientMixin": {
+      "<init>": "Lnet/minecraft/class_310;<init>(Lnet/minecraft/class_542;)V",
+      "Lnet/minecraft/client/MinecraftClient;runTasks()V": "Lnet/minecraft/class_310;method_5383()V",
+      "Lnet/minecraft/client/MinecraftClient;setOverlay(Lnet/minecraft/client/gui/screen/Overlay;)V": "Lnet/minecraft/class_310;method_18502(Lnet/minecraft/class_4071;)V",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z": "Lnet/minecraft/class_746;method_3144()Z",
+      "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z": "Lnet/minecraft/class_746;method_6115()Z",
+      "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isBreakingBlock()Z": "Lnet/minecraft/class_636;method_2923()Z",
+      "doAttack": "Lnet/minecraft/class_310;method_1536()Z",
+      "doItemUse": "Lnet/minecraft/class_310;method_1583()V",
+      "handleBlockBreaking": "Lnet/minecraft/class_310;method_1590(Z)V",
+      "render": "Lnet/minecraft/class_310;method_1523(Z)V",
+      "setScreen": "Lnet/minecraft/class_310;method_1507(Lnet/minecraft/class_437;)V",
+      "tick": "Lnet/minecraft/class_310;method_1574()V"
+    },
+    "eu/client/mixins/ModelMixin": {
+      "Lnet/minecraft/client/model/Model;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V": "Lnet/minecraft/class_3879;method_62100(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;III)V",
+      "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;II)V": "Lnet/minecraft/class_3879;method_60879(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;II)V"
+    },
+    "eu/client/mixins/MouseMixin": {
+      "onMouseButton": "Lnet/minecraft/class_312;method_1601(JIII)V"
+    },
+    "eu/client/mixins/NetworkStateTransitionHandlerMixin": {
+      "onDecoded": "Lnet/minecraft/class_8700;method_56347(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V",
+      "onEncoded": "Lnet/minecraft/class_8700;method_56348(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V"
+    },
+    "eu/client/mixins/ParticleManagerMixin": {
+      "addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)Lnet/minecraft/client/particle/Particle;": "Lnet/minecraft/class_702;method_3056(Lnet/minecraft/class_2394;DDDDDD)Lnet/minecraft/class_703;"
+    },
+    "eu/client/mixins/PlayerEntityMixin": {
+      "Lnet/minecraft/entity/player/PlayerEntity;setSprinting(Z)V": "Lnet/minecraft/class_1657;method_5728(Z)V",
+      "attack": "Lnet/minecraft/class_1657;method_7324(Lnet/minecraft/class_1297;)V",
+      "clipAtLedge": "Lnet/minecraft/class_1657;method_21825()Z",
+      "getBlockInteractionRange": "Lnet/minecraft/class_1657;method_55754()D",
+      "getEntityInteractionRange": "Lnet/minecraft/class_1657;method_55755()D",
+      "getMovementSpeed": "Lnet/minecraft/class_1657;method_6029()F",
+      "isPushedByFluids": "Lnet/minecraft/class_1657;method_5675()Z",
+      "travel": "Lnet/minecraft/class_1657;method_6091(Lnet/minecraft/class_243;)V"
+    },
+    "eu/client/mixins/PlayerListEntryMixin": {
+      "getSkinTextures": "Lnet/minecraft/class_640;method_52810()Lnet/minecraft/class_8685;"
+    },
+    "eu/client/mixins/PlayerListHudMixin": {
+      "collectPlayerEntries": "Lnet/minecraft/class_355;method_48213()Ljava/util/List;",
+      "getPlayerName": "Lnet/minecraft/class_355;method_1918(Lnet/minecraft/class_640;)Lnet/minecraft/class_2561;"
+    },
+    "eu/client/mixins/PropertiesMixin": {
+      "getTimeOfDay": "Lnet/minecraft/class_638$class_5271;method_217()J"
+    },
+    "eu/client/mixins/RegistryLoaderMixin": {
+      "load": "Lnet/minecraft/class_7655;method_45121(Lnet/minecraft/class_7655$class_7656;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/class_5455$class_6890;"
+    },
+    "eu/client/mixins/RenderTickCounterDynamicMixin": {
+      "Lnet/minecraft/client/render/RenderTickCounter$Dynamic;prevTimeMillis:J": "Lnet/minecraft/class_9779$class_9781;field_51962:J",
+      "beginRenderTick(J)I": "Lnet/minecraft/class_9779$class_9781;method_60639(J)I"
+    },
+    "eu/client/mixins/ScreenMixin": {
+      "renderBackground": "Lnet/minecraft/class_437;method_25420(Lnet/minecraft/class_332;IIF)V"
+    },
+    "eu/client/mixins/SlimeBlockMixin": {
+      "onSteppedOn": "Lnet/minecraft/class_2490;method_9591(Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_1297;)V"
+    },
+    "eu/client/mixins/TextRendererMixin": {
+      "drawLayer(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;IIZ)F": "Lnet/minecraft/class_327;method_1724(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+      "drawLayer(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;IIZ)F": "Lnet/minecraft/class_327;method_27530(Lnet/minecraft/class_5481;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+      "getWidth(Ljava/lang/String;)I": "Lnet/minecraft/class_327;method_1727(Ljava/lang/String;)I",
+      "getWidth(Lnet/minecraft/text/OrderedText;)I": "Lnet/minecraft/class_327;method_30880(Lnet/minecraft/class_5481;)I",
+      "getWidth(Lnet/minecraft/text/StringVisitable;)I": "Lnet/minecraft/class_327;method_27525(Lnet/minecraft/class_5348;)I"
+    },
+    "eu/client/mixins/TextVisitFactoryMixin": {
+      "visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z": "Lnet/minecraft/class_5223;method_27473(Ljava/lang/String;ILnet/minecraft/class_2583;Lnet/minecraft/class_2583;Lnet/minecraft/class_5224;)Z"
+    },
+    "eu/client/mixins/TitleScreenMixin": {
+      "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)I": "Lnet/minecraft/class_332;method_25303(Lnet/minecraft/class_327;Ljava/lang/String;III)I",
+      "init": "Lnet/minecraft/class_442;method_25426()V",
+      "render": "Lnet/minecraft/class_442;method_25394(Lnet/minecraft/class_332;IIF)V"
+    },
+    "eu/client/mixins/WorldRendererMixin": {
+      "Lnet/minecraft/client/render/WorldRenderer;setupTerrain(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/Frustum;ZZ)V": "Lnet/minecraft/class_761;method_3273(Lnet/minecraft/class_4184;Lnet/minecraft/class_4604;ZZ)V",
+      "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_898;method_62424(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+      "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V": "Lnet/minecraft/class_3695;method_15405(Ljava/lang/String;)V",
+      "hasBlindnessOrDarkness(Lnet/minecraft/client/render/Camera;)Z": "Lnet/minecraft/class_761;method_43788(Lnet/minecraft/class_4184;)Z",
+      "onResized": "Lnet/minecraft/class_761;method_3242(II)V",
+      "render": "Lnet/minecraft/class_761;method_22710(Lnet/minecraft/class_9922;Lnet/minecraft/class_9779;ZLnet/minecraft/class_4184;Lnet/minecraft/class_757;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
+      "renderEntity": "Lnet/minecraft/class_761;method_22977(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+    },
+    "eu/client/mixins/accessors/ChatHudAccessor": {
+      "addMessage": "method_58744(Lnet/minecraft/class_303;)V",
+      "addVisibleMessage": "method_1815(Lnet/minecraft/class_303;)V",
+      "hasUnreadNewMessages": "field_2067:Z",
+      "logChatMessage": "method_45027(Lnet/minecraft/class_303;)V",
+      "messages": "field_2061:Ljava/util/List;",
+      "scrolledLines": "field_2066:I",
+      "visibleMessages": "field_2064:Ljava/util/List;"
+    },
+    "eu/client/mixins/accessors/ClientPlayerEntityAccessor": {
+      "canSprint": "method_46743()Z",
+      "isWalking": "method_20623()Z",
+      "lastOnGround": "field_3920:Z",
+      "lastPitch": "field_3925:F",
+      "lastYaw": "field_3941:F",
+      "sendMovementPackets": "method_3136()V"
+    },
+    "eu/client/mixins/accessors/ClientPlayerInteractionManagerAccessor": {
+      "syncSelectedSlot": "method_2911()V"
+    },
+    "eu/client/mixins/accessors/ClientWorldAccessor": {
+      "getPendingUpdateManager": "method_41925()Lnet/minecraft/class_7202;"
+    },
+    "eu/client/mixins/accessors/CreativeInventoryScreenAccessor": {
+      "selectedTab": "field_2896:Lnet/minecraft/class_1761;"
+    },
+    "eu/client/mixins/accessors/CustomPayloadC2SPacketAccessor": {
+      "payload": "comp_1647:Lnet/minecraft/class_8710;"
+    },
+    "eu/client/mixins/accessors/DrawContextAccessor": {
+      "vertexConsumers": "field_44658:Lnet/minecraft/class_4597$class_4598;"
+    },
+    "eu/client/mixins/accessors/EntityAccessor": {
+      "movementInputToVelocity": "method_18795(Lnet/minecraft/class_243;FF)Lnet/minecraft/class_243;"
+    },
+    "eu/client/mixins/accessors/EntityVelocityUpdateS2CPacketAccessor": {
+      "velocityX": "field_12563:I",
+      "velocityY": "field_12562:I",
+      "velocityZ": "field_12561:I"
+    },
+    "eu/client/mixins/accessors/GameRendererAccessor": {
+      "pool": "field_53066:Lnet/minecraft/class_9920;"
+    },
+    "eu/client/mixins/accessors/ItemRenderStateAccessor": {
+      "layerCount": "field_55339:I",
+      "layers": "field_55340:[Lnet/minecraft/class_10444$class_10446;"
+    },
+    "eu/client/mixins/accessors/ItemRendererAccessor": {
+      "getDynamicDisplayGlintConsumer": "method_30114(Lnet/minecraft/class_4597;Lnet/minecraft/class_1921;Lnet/minecraft/class_4587$class_4665;)Lnet/minecraft/class_4588;",
+      "itemModelManager": "field_55296:Lnet/minecraft/class_10442;",
+      "renderBakedItemModel": "method_23182(Lnet/minecraft/class_1087;[IIILnet/minecraft/class_4587;Lnet/minecraft/class_4588;)V"
+    },
+    "eu/client/mixins/accessors/LayerRenderStateAccessor": {
+      "data": "field_55351:Ljava/lang/Object;",
+      "glint": "field_55348:Lnet/minecraft/class_10444$class_10445;",
+      "model": "field_55346:Lnet/minecraft/class_1087;",
+      "specialModelType": "field_55350:Lnet/minecraft/class_10515;",
+      "tints": "field_55349:[I"
+    },
+    "eu/client/mixins/accessors/LimbAnimatorAccessor": {
+      "pos": "field_42111:F"
+    },
+    "eu/client/mixins/accessors/MinecraftClientAccessor": {
+      "doItemUse": "method_1583()V"
+    },
+    "eu/client/mixins/accessors/ModelPartAccessor": {
+      "children": "field_3661:Ljava/util/Map;",
+      "cuboids": "field_3663:Ljava/util/List;"
+    },
+    "eu/client/mixins/accessors/ModelPartCuboidAccessor": {
+      "sides": "field_3649:[Lnet/minecraft/class_630$class_593;"
+    },
+    "eu/client/mixins/accessors/MouseAccessor": {
+      "onMouseButton": "method_1601(JIII)V"
+    },
+    "eu/client/mixins/accessors/NativeImageAccessor": {
+      "pointer": "field_4988:J"
+    },
+    "eu/client/mixins/accessors/PlayerInteractEntityC2SPacketAccessor": {
+      "entityId": "field_12870:I",
+      "write": "method_55976(Lnet/minecraft/class_2540;)V"
+    },
+    "eu/client/mixins/accessors/PlayerListS2CPacketAccessor": {
+      "actions": "field_40698:Ljava/util/EnumSet;",
+      "entries": "field_12369:Ljava/util/List;"
+    },
+    "eu/client/mixins/accessors/PlayerMoveC2SPacketAccessor": {
+      "changeLook": "field_12888:Z",
+      "onGround": "field_29179:Z",
+      "pitch": "field_12885:F",
+      "yaw": "field_12887:F"
+    },
+    "eu/client/mixins/accessors/PlayerPositionAccessor": {
+      "pitch": "comp_3151:F",
+      "yaw": "comp_3150:F"
+    },
+    "eu/client/mixins/accessors/PostEffectProcessorAccessor": {
+      "passes": "field_1497:Ljava/util/List;"
+    },
+    "eu/client/mixins/accessors/RenderLayerMultiPhaseAccessor": {
+      "getPhases": "method_35784()Lnet/minecraft/class_1921$class_4688;"
+    },
+    "eu/client/mixins/accessors/RenderLayerMultiPhaseParametersAccessor": {
+      "outlineMode": "field_21852:Lnet/minecraft/class_1921$class_4750;",
+      "texture": "field_21406:Lnet/minecraft/class_4668$class_5939;"
+    },
+    "eu/client/mixins/accessors/RenderPhaseTextureBaseAccessor": {
+      "getId": "method_23564()Ljava/util/Optional;"
+    },
+    "eu/client/mixins/accessors/StyleAccessor": {
+      "<init>": "<init>"
+    },
+    "eu/client/mixins/accessors/TextColorAccessor": {
+      "<init>": "<init>"
+    },
+    "eu/client/mixins/accessors/TextRendererAccessor": {
+      "drawLayer": "method_1724(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+      "tweakTransparency": "method_27515(I)I"
+    },
+    "eu/client/mixins/accessors/Vec3dAccessor": {
+      "x": "field_1352:D",
+      "y": "field_1351:D",
+      "z": "field_1350:D"
+    },
+    "eu/client/mixins/accessors/WorldRendererAccessor": {
+      "entityOutlineFramebuffer": "field_53080:Lnet/minecraft/class_276;",
+      "frustum": "field_27740:Lnet/minecraft/class_4604;"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "eu/client/mixins/AbstractSignBlockEntityRendererMixin": {
+        "renderText": "Lnet/minecraft/class_10529;method_65828(Lnet/minecraft/class_2338;Lnet/minecraft/class_8242;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;IIIZ)V"
+      },
+      "eu/client/mixins/ArmorFeatureRendererMixin": {
+        "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/BipedEntityRenderState;FF)V": "Lnet/minecraft/class_970;method_17157(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;ILnet/minecraft/class_10034;FF)V"
+      },
+      "eu/client/mixins/BackgroundRendererMixin": {
+        "Lnet/minecraft/client/render/Fog;<init>(FFLnet/minecraft/client/render/FogShape;FFFF)V": "Lnet/minecraft/class_9958;<init>(FFLnet/minecraft/class_6854;FFFF)V",
+        "applyFog": "Lnet/minecraft/class_758;method_3211(Lnet/minecraft/class_4184;Lnet/minecraft/class_758$class_4596;Lorg/joml/Vector4f;FZF)Lnet/minecraft/class_9958;",
+        "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;": "Lnet/minecraft/class_758;method_42588(Lnet/minecraft/class_1297;F)Lnet/minecraft/class_758$class_7286;"
+      },
+      "eu/client/mixins/BlockBreakingInfoMixin": {
+        "compareTo(Lnet/minecraft/entity/player/BlockBreakingInfo;)I": "Lnet/minecraft/class_3191;method_23269(Lnet/minecraft/class_3191;)I"
+      },
+      "eu/client/mixins/BlockEntityRenderDispatcherMixin": {
+        "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V": "Lnet/minecraft/class_824;method_3555(Lnet/minecraft/class_2586;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+        "render(Lnet/minecraft/client/render/block/entity/BlockEntityRenderer;Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V": "Lnet/minecraft/class_824;method_23079(Lnet/minecraft/class_827;Lnet/minecraft/class_2586;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+      },
+      "eu/client/mixins/BlockMixin": {
+        "getSlipperiness": "Lnet/minecraft/class_2248;method_9499()F"
+      },
+      "eu/client/mixins/BossBarHudMixin": {
+        "render": "Lnet/minecraft/class_337;method_1796(Lnet/minecraft/class_332;)V"
+      },
+      "eu/client/mixins/CameraMixin": {
+        "Lnet/minecraft/client/render/Camera;clipToSpace(F)F": "Lnet/minecraft/class_4184;method_19318(F)F",
+        "Lnet/minecraft/client/render/Camera;setPos(DDD)V": "Lnet/minecraft/class_4184;method_19327(DDD)V",
+        "Lnet/minecraft/client/render/Camera;setRotation(FF)V": "Lnet/minecraft/class_4184;method_19325(FF)V",
+        "clipToSpace": "Lnet/minecraft/class_4184;method_19318(F)F",
+        "getSubmersionType": "Lnet/minecraft/class_4184;method_19334()Lnet/minecraft/class_5636;",
+        "update": "Lnet/minecraft/class_4184;method_19321(Lnet/minecraft/class_1922;Lnet/minecraft/class_1297;ZZF)V"
+      },
+      "eu/client/mixins/ChatHudMixin": {
+        "Lnet/minecraft/client/gui/hud/ChatHudLine;<init>(ILnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V": "Lnet/minecraft/class_303;<init>(ILnet/minecraft/class_2561;Lnet/minecraft/class_7469;Lnet/minecraft/class_7591;)V",
+        "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V": "Lnet/minecraft/class_338;method_44811(Lnet/minecraft/class_2561;Lnet/minecraft/class_7469;Lnet/minecraft/class_7591;)V",
+        "addVisibleMessage": "Lnet/minecraft/class_338;method_1815(Lnet/minecraft/class_303;)V"
+      },
+      "eu/client/mixins/ChatScreenMixin": {
+        "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V": "Lnet/minecraft/class_332;method_25294(IIIII)V",
+        "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendChatCommand(Ljava/lang/String;)V": "Lnet/minecraft/class_634;method_45730(Ljava/lang/String;)V",
+        "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendChatMessage(Ljava/lang/String;)V": "Lnet/minecraft/class_634;method_45729(Ljava/lang/String;)V",
+        "render": "Lnet/minecraft/class_408;method_25394(Lnet/minecraft/class_332;IIF)V",
+        "sendMessage": "Lnet/minecraft/class_408;method_44056(Ljava/lang/String;Z)V"
+      },
+      "eu/client/mixins/ClientConnectionMixin": {
+        "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V": "Lnet/minecraft/class_2535;method_10770(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V",
+        "disconnect(Lnet/minecraft/network/DisconnectionInfo;)V": "Lnet/minecraft/class_2535;method_60924(Lnet/minecraft/class_9812;)V",
+        "exceptionCaught": "Lnet/minecraft/class_2535;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V",
+        "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V": "Lnet/minecraft/class_2535;method_10752(Lnet/minecraft/class_2596;Lnet/minecraft/class_7648;)V"
+      },
+      "eu/client/mixins/ClientPlayNetworkHandlerMixin": {
+        "onGameJoin": "Lnet/minecraft/class_634;method_11120(Lnet/minecraft/class_2678;)V"
+      },
+      "eu/client/mixins/ClientPlayerEntityMixin": {
+        "Lnet/minecraft/client/network/AbstractClientPlayerEntity;tick()V": "Lnet/minecraft/class_742;method_5773()V",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z": "Lnet/minecraft/class_746;method_6115()Z",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;lastPitch:F": "Lnet/minecraft/class_746;field_3925:F",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;lastYaw:F": "Lnet/minecraft/class_746;field_3941:F",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;tickables:Ljava/util/List;": "Lnet/minecraft/class_746;field_3933:Ljava/util/List;",
+        "canStartSprinting": "Lnet/minecraft/class_746;method_48300()Z",
+        "move": "Lnet/minecraft/class_746;method_5784(Lnet/minecraft/class_1313;Lnet/minecraft/class_243;)V",
+        "pushOutOfBlocks": "Lnet/minecraft/class_746;method_30673(DD)V",
+        "sendMovementPackets": "Lnet/minecraft/class_746;method_3136()V",
+        "setCurrentHand": "Lnet/minecraft/class_746;method_6019(Lnet/minecraft/class_1268;)V",
+        "swingHand": "Lnet/minecraft/class_746;method_6104(Lnet/minecraft/class_1268;)V",
+        "tick": "Lnet/minecraft/class_746;method_5773()V",
+        "tickMovement": "Lnet/minecraft/class_746;method_6007()V",
+        "tickNausea": "Lnet/minecraft/class_746;method_60887(Z)V"
+      },
+      "eu/client/mixins/ClientPlayerInteractionManagerMixin": {
+        "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V": "Lnet/minecraft/class_636;method_41931(Lnet/minecraft/class_638;Lnet/minecraft/class_7204;)V",
+        "attackBlock": "Lnet/minecraft/class_636;method_2910(Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)Z",
+        "attackEntity": "Lnet/minecraft/class_636;method_2918(Lnet/minecraft/class_1657;Lnet/minecraft/class_1297;)V",
+        "breakBlock": "Lnet/minecraft/class_636;method_2899(Lnet/minecraft/class_2338;)Z",
+        "interactBlock": "Lnet/minecraft/class_636;method_2896(Lnet/minecraft/class_746;Lnet/minecraft/class_1268;Lnet/minecraft/class_3965;)Lnet/minecraft/class_1269;",
+        "stopUsingItem": "Lnet/minecraft/class_636;method_2897(Lnet/minecraft/class_1657;)V",
+        "syncSelectedSlot": "Lnet/minecraft/class_636;method_2911()V"
+      },
+      "eu/client/mixins/ClientWorldMixin": {
+        "addEntity": "Lnet/minecraft/class_638;method_53875(Lnet/minecraft/class_1297;)V",
+        "getSkyColor": "Lnet/minecraft/class_638;method_23777(Lnet/minecraft/class_243;F)I"
+      },
+      "eu/client/mixins/CobwebBlockMixin": {
+        "onEntityCollision": "Lnet/minecraft/class_2560;method_9548(Lnet/minecraft/class_2680;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_1297;)V"
+      },
+      "eu/client/mixins/ConnectScreenMixin": {
+        "connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Lnet/minecraft/client/network/CookieStorage;)V": "Lnet/minecraft/class_412;method_2130(Lnet/minecraft/class_310;Lnet/minecraft/class_639;Lnet/minecraft/class_642;Lnet/minecraft/class_9112;)V"
+      },
+      "eu/client/mixins/DisconnectedScreenMixin": {
+        "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;refreshPositions()V": "Lnet/minecraft/class_8667;method_48222()V",
+        "init": "Lnet/minecraft/class_419;method_25426()V"
+      },
+      "eu/client/mixins/DownloadingTerrainScreenMixin": {
+        "renderBackground": "Lnet/minecraft/class_434;method_25420(Lnet/minecraft/class_332;IIF)V"
+      },
+      "eu/client/mixins/DrawContextMixin": {
+        "drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I": "Lnet/minecraft/class_332;method_51433(Lnet/minecraft/class_327;Ljava/lang/String;IIIZ)I",
+        "drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/OrderedText;IIIZ)I": "Lnet/minecraft/class_332;method_51430(Lnet/minecraft/class_327;Lnet/minecraft/class_5481;IIIZ)I"
+      },
+      "eu/client/mixins/EndCrystalEntityModelMixin": {
+        "Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;age:F": "Lnet/minecraft/class_10014;field_53328:F",
+        "setAngles(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;)V": "Lnet/minecraft/class_9946;method_62083(Lnet/minecraft/class_10014;)V"
+      },
+      "eu/client/mixins/EndCrystalEntityRendererMixin": {
+        "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V": "Lnet/minecraft/class_4587;method_22905(FFF)V",
+        "getYOffset": "Lnet/minecraft/class_892;method_23155(F)F",
+        "render(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_892;method_3908(Lnet/minecraft/class_10014;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V"
+      },
+      "eu/client/mixins/EntityMixin": {
+        "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;": "Lnet/minecraft/class_2680;method_26204()Lnet/minecraft/class_2248;",
+        "Lnet/minecraft/entity/Entity;getVelocity()Lnet/minecraft/util/math/Vec3d;": "Lnet/minecraft/class_1297;method_18798()Lnet/minecraft/class_243;",
+        "getPitch*": "Lnet/minecraft/class_1297;method_5695(F)F",
+        "getVelocityMultiplier": "Lnet/minecraft/class_1297;method_23326()F",
+        "getYaw*": "Lnet/minecraft/class_1297;method_5705(F)F",
+        "pushAwayFrom": "Lnet/minecraft/class_1297;method_5697(Lnet/minecraft/class_1297;)V",
+        "setPitch": "Lnet/minecraft/class_1297;method_36457(F)V",
+        "setYaw": "Lnet/minecraft/class_1297;method_36456(F)V",
+        "updateMovementInFluid": "Lnet/minecraft/class_1297;method_5692(Lnet/minecraft/class_6862;D)Z",
+        "updateVelocity": "Lnet/minecraft/class_1297;method_5724(FLnet/minecraft/class_243;)V"
+      },
+      "eu/client/mixins/EntityRenderDispatcherMixin": {
+        "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;renderFire(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/render/entity/state/EntityRenderState;Lorg/joml/Quaternionf;)V": "Lnet/minecraft/class_898;method_23165(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;Lnet/minecraft/class_10017;Lorg/joml/Quaternionf;)V",
+        "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V": "Lnet/minecraft/class_898;method_3954(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;ILnet/minecraft/class_897;)V"
+      },
+      "eu/client/mixins/EntityRendererMixin": {
+        "getDisplayName": "Lnet/minecraft/class_897;method_62426(Lnet/minecraft/class_1297;)Lnet/minecraft/class_2561;"
+      },
+      "eu/client/mixins/FireworkRocketEntityMixin": {
+        "Lnet/minecraft/entity/projectile/FireworkRocketEntity;updateRotation()V": "Lnet/minecraft/class_1671;method_26962()V",
+        "tick": "Lnet/minecraft/class_1671;method_5773()V"
+      },
+      "eu/client/mixins/FishingBobberEntityMixin": {
+        "Lnet/minecraft/entity/projectile/FishingBobberEntity;pullHookedEntity(Lnet/minecraft/entity/Entity;)V": "Lnet/minecraft/class_1536;method_6954(Lnet/minecraft/class_1297;)V",
+        "handleStatus": "Lnet/minecraft/class_1536;method_5711(B)V"
+      },
+      "eu/client/mixins/GameMenuScreenMixin": {
+        "init": "Lnet/minecraft/class_433;method_25426()V"
+      },
+      "eu/client/mixins/GameRendererMixin": {
+        "Lnet/minecraft/client/render/GameRenderer;findCrosshairTarget(Lnet/minecraft/entity/Entity;DDF)Lnet/minecraft/util/hit/HitResult;": "Lnet/minecraft/class_757;method_56153(Lnet/minecraft/class_1297;DDF)Lnet/minecraft/class_239;",
+        "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V": "Lnet/minecraft/class_761;method_22710(Lnet/minecraft/class_9922;Lnet/minecraft/class_9779;ZLnet/minecraft/class_4184;Lnet/minecraft/class_757;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
+        "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;": "Lnet/minecraft/class_1675;method_18075(Lnet/minecraft/class_1297;Lnet/minecraft/class_243;Lnet/minecraft/class_243;Lnet/minecraft/class_238;Ljava/util/function/Predicate;D)Lnet/minecraft/class_3966;",
+        "findCrosshairTarget": "Lnet/minecraft/class_757;method_56153(Lnet/minecraft/class_1297;DDF)Lnet/minecraft/class_239;",
+        "getBasicProjectionMatrix": "Lnet/minecraft/class_757;method_22973(F)Lorg/joml/Matrix4f;",
+        "getFov": "Lnet/minecraft/class_757;method_3196(Lnet/minecraft/class_4184;FZ)F",
+        "renderWorld": "Lnet/minecraft/class_757;method_3188(Lnet/minecraft/class_9779;)V",
+        "showFloatingItem": "Lnet/minecraft/class_757;method_3189(Lnet/minecraft/class_1799;)V",
+        "tiltViewWhenHurt": "Lnet/minecraft/class_757;method_3198(Lnet/minecraft/class_4587;F)V",
+        "updateCrosshairTarget": "Lnet/minecraft/class_757;method_3190(F)V"
+      },
+      "eu/client/mixins/GlyphMixin": {
+        "getShadowOffset": "Lnet/minecraft/class_379;method_16800()F"
+      },
+      "eu/client/mixins/HandledScreenMixin": {
+        "drawMouseoverTooltip": "Lnet/minecraft/class_465;method_2380(Lnet/minecraft/class_332;II)V",
+        "render": "Lnet/minecraft/class_465;method_25394(Lnet/minecraft/class_332;IIF)V"
+      },
+      "eu/client/mixins/HeldItemRendererMixin": {
+        "Lnet/minecraft/client/render/item/HeldItemRenderer;renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_759;method_3228(Lnet/minecraft/class_742;FFLnet/minecraft/class_1268;FLnet/minecraft/class_1799;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+        "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F": "Lnet/minecraft/class_3532;method_16439(FFF)F",
+        "applyEatOrDrinkTransformation": "Lnet/minecraft/class_759;method_3218(Lnet/minecraft/class_4587;FLnet/minecraft/class_1306;Lnet/minecraft/class_1799;Lnet/minecraft/class_1657;)V",
+        "applySwingOffset": "Lnet/minecraft/class_759;method_3217(Lnet/minecraft/class_4587;Lnet/minecraft/class_1306;F)V",
+        "renderFirstPersonItem": "Lnet/minecraft/class_759;method_3228(Lnet/minecraft/class_742;FFLnet/minecraft/class_1268;FLnet/minecraft/class_1799;FLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+        "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V": "Lnet/minecraft/class_759;method_22976(FLnet/minecraft/class_4587;Lnet/minecraft/class_4597$class_4598;Lnet/minecraft/class_746;I)V"
+      },
+      "eu/client/mixins/InGameHudMixin": {
+        "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/util/Identifier;F)V": "Lnet/minecraft/class_329;method_31977(Lnet/minecraft/class_332;Lnet/minecraft/class_2960;F)V",
+        "render": "Lnet/minecraft/class_329;method_1753(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+        "renderCrosshair": "Lnet/minecraft/class_329;method_1736(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+        "renderMiscOverlays": "Lnet/minecraft/class_329;method_55798(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+        "renderPortalOverlay": "Lnet/minecraft/class_329;method_1746(Lnet/minecraft/class_332;F)V",
+        "renderStatusEffectOverlay": "Lnet/minecraft/class_329;method_1765(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V",
+        "renderVignetteOverlay": "Lnet/minecraft/class_329;method_1735(Lnet/minecraft/class_332;Lnet/minecraft/class_1297;)V"
+      },
+      "eu/client/mixins/InGameOverlayRendererMixin": {
+        "renderFireOverlay": "Lnet/minecraft/class_4603;method_23070(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+        "renderInWallOverlay": "Lnet/minecraft/class_4603;method_23068(Lnet/minecraft/class_1058;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V",
+        "renderUnderwaterOverlay": "Lnet/minecraft/class_4603;method_23069(Lnet/minecraft/class_310;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+      },
+      "eu/client/mixins/InactivityFpsLimiterMixin": {
+        "update": "Lnet/minecraft/class_9919;method_61937()I"
+      },
+      "eu/client/mixins/ItemRendererMixin": {
+        "Lnet/minecraft/client/render/item/ItemRenderer;renderBakedItemModel(Lnet/minecraft/client/render/model/BakedModel;[IIILnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;)V": "Lnet/minecraft/class_918;method_23182(Lnet/minecraft/class_1087;[IIILnet/minecraft/class_4587;Lnet/minecraft/class_4588;)V",
+        "renderItem(Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II[ILnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/item/ItemRenderState$Glint;)V": "Lnet/minecraft/class_918;method_62476(Lnet/minecraft/class_811;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;II[ILnet/minecraft/class_1087;Lnet/minecraft/class_1921;Lnet/minecraft/class_10444$class_10445;)V"
+      },
+      "eu/client/mixins/KeyboardInputMixin": {
+        "tick": "Lnet/minecraft/class_743;method_3129()V"
+      },
+      "eu/client/mixins/KeyboardMixin": {
+        "onKey": "Lnet/minecraft/class_309;method_1466(JIIII)V"
+      },
+      "eu/client/mixins/LightmapTextureManagerMixin": {
+        "Lnet/minecraft/client/gl/SimpleFramebuffer;endWrite()V": "Lnet/minecraft/class_6367;method_1240()V",
+        "getDarknessFactor(F)F": "Lnet/minecraft/class_765;method_42597(F)F",
+        "update": "Lnet/minecraft/class_765;method_3313(F)V"
+      },
+      "eu/client/mixins/LimbAnimatorMixin": {
+        "getPos()F": "Lnet/minecraft/class_8080;method_48569()F",
+        "getPos(F)F": "Lnet/minecraft/class_8080;method_48572(F)F",
+        "getSpeed()F": "Lnet/minecraft/class_8080;method_48566()F",
+        "getSpeed(F)F": "Lnet/minecraft/class_8080;method_48570(F)F"
+      },
+      "eu/client/mixins/LivingEntityMixin": {
+        "Lnet/minecraft/entity/Entity;setSprinting(Z)V": "Lnet/minecraft/class_1297;method_5728(Z)V",
+        "Lnet/minecraft/entity/LivingEntity;getStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Lnet/minecraft/entity/effect/StatusEffectInstance;": "Lnet/minecraft/class_1309;method_6112(Lnet/minecraft/class_6880;)Lnet/minecraft/class_1293;",
+        "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z": "Lnet/minecraft/class_1309;method_6059(Lnet/minecraft/class_6880;)Z",
+        "Lnet/minecraft/item/ItemStack;finishUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;": "Lnet/minecraft/class_1799;method_7910(Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;)Lnet/minecraft/class_1799;",
+        "Lnet/minecraft/util/profiler/Profiler;pop()V": "Lnet/minecraft/class_3695;method_15407()V",
+        "consumeItem": "Lnet/minecraft/class_1309;method_6040()V",
+        "getHandSwingDuration": "Lnet/minecraft/class_1309;method_6028()I",
+        "getStepHeight": "Lnet/minecraft/class_1309;method_49476()F",
+        "jump": "Lnet/minecraft/class_1309;method_6043()V",
+        "setSprinting": "Lnet/minecraft/class_1309;method_5728(Z)V",
+        "tickMovement": "Lnet/minecraft/class_1309;method_6007()V",
+        "travelMidAir": "Lnet/minecraft/class_1309;method_61428(Lnet/minecraft/class_243;)V"
+      },
+      "eu/client/mixins/LivingEntityRendererMixin": {
+        "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V": "Lnet/minecraft/class_583;method_62100(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;III)V",
+        "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V": "Lnet/minecraft/class_4587;method_22905(FFF)V",
+        "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_922;method_4054(Lnet/minecraft/class_10042;Lnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V"
+      },
+      "eu/client/mixins/MinecraftClientMixin": {
+        "<init>": "Lnet/minecraft/class_310;<init>(Lnet/minecraft/class_542;)V",
+        "Lnet/minecraft/client/MinecraftClient;runTasks()V": "Lnet/minecraft/class_310;method_5383()V",
+        "Lnet/minecraft/client/MinecraftClient;setOverlay(Lnet/minecraft/client/gui/screen/Overlay;)V": "Lnet/minecraft/class_310;method_18502(Lnet/minecraft/class_4071;)V",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z": "Lnet/minecraft/class_746;method_3144()Z",
+        "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z": "Lnet/minecraft/class_746;method_6115()Z",
+        "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isBreakingBlock()Z": "Lnet/minecraft/class_636;method_2923()Z",
+        "doAttack": "Lnet/minecraft/class_310;method_1536()Z",
+        "doItemUse": "Lnet/minecraft/class_310;method_1583()V",
+        "handleBlockBreaking": "Lnet/minecraft/class_310;method_1590(Z)V",
+        "render": "Lnet/minecraft/class_310;method_1523(Z)V",
+        "setScreen": "Lnet/minecraft/class_310;method_1507(Lnet/minecraft/class_437;)V",
+        "tick": "Lnet/minecraft/class_310;method_1574()V"
+      },
+      "eu/client/mixins/ModelMixin": {
+        "Lnet/minecraft/client/model/Model;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V": "Lnet/minecraft/class_3879;method_62100(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;III)V",
+        "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;II)V": "Lnet/minecraft/class_3879;method_60879(Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;II)V"
+      },
+      "eu/client/mixins/MouseMixin": {
+        "onMouseButton": "Lnet/minecraft/class_312;method_1601(JIII)V"
+      },
+      "eu/client/mixins/NetworkStateTransitionHandlerMixin": {
+        "onDecoded": "Lnet/minecraft/class_8700;method_56347(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V",
+        "onEncoded": "Lnet/minecraft/class_8700;method_56348(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/class_2596;)V"
+      },
+      "eu/client/mixins/ParticleManagerMixin": {
+        "addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)Lnet/minecraft/client/particle/Particle;": "Lnet/minecraft/class_702;method_3056(Lnet/minecraft/class_2394;DDDDDD)Lnet/minecraft/class_703;"
+      },
+      "eu/client/mixins/PlayerEntityMixin": {
+        "Lnet/minecraft/entity/player/PlayerEntity;setSprinting(Z)V": "Lnet/minecraft/class_1657;method_5728(Z)V",
+        "attack": "Lnet/minecraft/class_1657;method_7324(Lnet/minecraft/class_1297;)V",
+        "clipAtLedge": "Lnet/minecraft/class_1657;method_21825()Z",
+        "getBlockInteractionRange": "Lnet/minecraft/class_1657;method_55754()D",
+        "getEntityInteractionRange": "Lnet/minecraft/class_1657;method_55755()D",
+        "getMovementSpeed": "Lnet/minecraft/class_1657;method_6029()F",
+        "isPushedByFluids": "Lnet/minecraft/class_1657;method_5675()Z",
+        "travel": "Lnet/minecraft/class_1657;method_6091(Lnet/minecraft/class_243;)V"
+      },
+      "eu/client/mixins/PlayerListEntryMixin": {
+        "getSkinTextures": "Lnet/minecraft/class_640;method_52810()Lnet/minecraft/class_8685;"
+      },
+      "eu/client/mixins/PlayerListHudMixin": {
+        "collectPlayerEntries": "Lnet/minecraft/class_355;method_48213()Ljava/util/List;",
+        "getPlayerName": "Lnet/minecraft/class_355;method_1918(Lnet/minecraft/class_640;)Lnet/minecraft/class_2561;"
+      },
+      "eu/client/mixins/PropertiesMixin": {
+        "getTimeOfDay": "Lnet/minecraft/class_638$class_5271;method_217()J"
+      },
+      "eu/client/mixins/RegistryLoaderMixin": {
+        "load": "Lnet/minecraft/class_7655;method_45121(Lnet/minecraft/class_7655$class_7656;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/class_5455$class_6890;"
+      },
+      "eu/client/mixins/RenderTickCounterDynamicMixin": {
+        "Lnet/minecraft/client/render/RenderTickCounter$Dynamic;prevTimeMillis:J": "Lnet/minecraft/class_9779$class_9781;field_51962:J",
+        "beginRenderTick(J)I": "Lnet/minecraft/class_9779$class_9781;method_60639(J)I"
+      },
+      "eu/client/mixins/ScreenMixin": {
+        "renderBackground": "Lnet/minecraft/class_437;method_25420(Lnet/minecraft/class_332;IIF)V"
+      },
+      "eu/client/mixins/SlimeBlockMixin": {
+        "onSteppedOn": "Lnet/minecraft/class_2490;method_9591(Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_1297;)V"
+      },
+      "eu/client/mixins/TextRendererMixin": {
+        "drawLayer(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;IIZ)F": "Lnet/minecraft/class_327;method_1724(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+        "drawLayer(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;IIZ)F": "Lnet/minecraft/class_327;method_27530(Lnet/minecraft/class_5481;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+        "getWidth(Ljava/lang/String;)I": "Lnet/minecraft/class_327;method_1727(Ljava/lang/String;)I",
+        "getWidth(Lnet/minecraft/text/OrderedText;)I": "Lnet/minecraft/class_327;method_30880(Lnet/minecraft/class_5481;)I",
+        "getWidth(Lnet/minecraft/text/StringVisitable;)I": "Lnet/minecraft/class_327;method_27525(Lnet/minecraft/class_5348;)I"
+      },
+      "eu/client/mixins/TextVisitFactoryMixin": {
+        "visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z": "Lnet/minecraft/class_5223;method_27473(Ljava/lang/String;ILnet/minecraft/class_2583;Lnet/minecraft/class_2583;Lnet/minecraft/class_5224;)Z"
+      },
+      "eu/client/mixins/TitleScreenMixin": {
+        "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)I": "Lnet/minecraft/class_332;method_25303(Lnet/minecraft/class_327;Ljava/lang/String;III)I",
+        "init": "Lnet/minecraft/class_442;method_25426()V",
+        "render": "Lnet/minecraft/class_442;method_25394(Lnet/minecraft/class_332;IIF)V"
+      },
+      "eu/client/mixins/WorldRendererMixin": {
+        "Lnet/minecraft/client/render/WorldRenderer;setupTerrain(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/Frustum;ZZ)V": "Lnet/minecraft/class_761;method_3273(Lnet/minecraft/class_4184;Lnet/minecraft/class_4604;ZZ)V",
+        "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V": "Lnet/minecraft/class_898;method_62424(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;I)V",
+        "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V": "Lnet/minecraft/class_3695;method_15405(Ljava/lang/String;)V",
+        "hasBlindnessOrDarkness(Lnet/minecraft/client/render/Camera;)Z": "Lnet/minecraft/class_761;method_43788(Lnet/minecraft/class_4184;)Z",
+        "onResized": "Lnet/minecraft/class_761;method_3242(II)V",
+        "render": "Lnet/minecraft/class_761;method_22710(Lnet/minecraft/class_9922;Lnet/minecraft/class_9779;ZLnet/minecraft/class_4184;Lnet/minecraft/class_757;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
+        "renderEntity": "Lnet/minecraft/class_761;method_22977(Lnet/minecraft/class_1297;DDDFLnet/minecraft/class_4587;Lnet/minecraft/class_4597;)V"
+      },
+      "eu/client/mixins/accessors/ChatHudAccessor": {
+        "addMessage": "method_58744(Lnet/minecraft/class_303;)V",
+        "addVisibleMessage": "method_1815(Lnet/minecraft/class_303;)V",
+        "hasUnreadNewMessages": "field_2067:Z",
+        "logChatMessage": "method_45027(Lnet/minecraft/class_303;)V",
+        "messages": "field_2061:Ljava/util/List;",
+        "scrolledLines": "field_2066:I",
+        "visibleMessages": "field_2064:Ljava/util/List;"
+      },
+      "eu/client/mixins/accessors/ClientPlayerEntityAccessor": {
+        "canSprint": "method_46743()Z",
+        "isWalking": "method_20623()Z",
+        "lastOnGround": "field_3920:Z",
+        "lastPitch": "field_3925:F",
+        "lastYaw": "field_3941:F",
+        "sendMovementPackets": "method_3136()V"
+      },
+      "eu/client/mixins/accessors/ClientPlayerInteractionManagerAccessor": {
+        "syncSelectedSlot": "method_2911()V"
+      },
+      "eu/client/mixins/accessors/ClientWorldAccessor": {
+        "getPendingUpdateManager": "method_41925()Lnet/minecraft/class_7202;"
+      },
+      "eu/client/mixins/accessors/CreativeInventoryScreenAccessor": {
+        "selectedTab": "field_2896:Lnet/minecraft/class_1761;"
+      },
+      "eu/client/mixins/accessors/CustomPayloadC2SPacketAccessor": {
+        "payload": "comp_1647:Lnet/minecraft/class_8710;"
+      },
+      "eu/client/mixins/accessors/DrawContextAccessor": {
+        "vertexConsumers": "field_44658:Lnet/minecraft/class_4597$class_4598;"
+      },
+      "eu/client/mixins/accessors/EntityAccessor": {
+        "movementInputToVelocity": "method_18795(Lnet/minecraft/class_243;FF)Lnet/minecraft/class_243;"
+      },
+      "eu/client/mixins/accessors/EntityVelocityUpdateS2CPacketAccessor": {
+        "velocityX": "field_12563:I",
+        "velocityY": "field_12562:I",
+        "velocityZ": "field_12561:I"
+      },
+      "eu/client/mixins/accessors/GameRendererAccessor": {
+        "pool": "field_53066:Lnet/minecraft/class_9920;"
+      },
+      "eu/client/mixins/accessors/ItemRenderStateAccessor": {
+        "layerCount": "field_55339:I",
+        "layers": "field_55340:[Lnet/minecraft/class_10444$class_10446;"
+      },
+      "eu/client/mixins/accessors/ItemRendererAccessor": {
+        "getDynamicDisplayGlintConsumer": "method_30114(Lnet/minecraft/class_4597;Lnet/minecraft/class_1921;Lnet/minecraft/class_4587$class_4665;)Lnet/minecraft/class_4588;",
+        "itemModelManager": "field_55296:Lnet/minecraft/class_10442;",
+        "renderBakedItemModel": "method_23182(Lnet/minecraft/class_1087;[IIILnet/minecraft/class_4587;Lnet/minecraft/class_4588;)V"
+      },
+      "eu/client/mixins/accessors/LayerRenderStateAccessor": {
+        "data": "field_55351:Ljava/lang/Object;",
+        "glint": "field_55348:Lnet/minecraft/class_10444$class_10445;",
+        "model": "field_55346:Lnet/minecraft/class_1087;",
+        "specialModelType": "field_55350:Lnet/minecraft/class_10515;",
+        "tints": "field_55349:[I"
+      },
+      "eu/client/mixins/accessors/LimbAnimatorAccessor": {
+        "pos": "field_42111:F"
+      },
+      "eu/client/mixins/accessors/MinecraftClientAccessor": {
+        "doItemUse": "method_1583()V"
+      },
+      "eu/client/mixins/accessors/ModelPartAccessor": {
+        "children": "field_3661:Ljava/util/Map;",
+        "cuboids": "field_3663:Ljava/util/List;"
+      },
+      "eu/client/mixins/accessors/ModelPartCuboidAccessor": {
+        "sides": "field_3649:[Lnet/minecraft/class_630$class_593;"
+      },
+      "eu/client/mixins/accessors/MouseAccessor": {
+        "onMouseButton": "method_1601(JIII)V"
+      },
+      "eu/client/mixins/accessors/NativeImageAccessor": {
+        "pointer": "field_4988:J"
+      },
+      "eu/client/mixins/accessors/PlayerInteractEntityC2SPacketAccessor": {
+        "entityId": "field_12870:I",
+        "write": "method_55976(Lnet/minecraft/class_2540;)V"
+      },
+      "eu/client/mixins/accessors/PlayerListS2CPacketAccessor": {
+        "actions": "field_40698:Ljava/util/EnumSet;",
+        "entries": "field_12369:Ljava/util/List;"
+      },
+      "eu/client/mixins/accessors/PlayerMoveC2SPacketAccessor": {
+        "changeLook": "field_12888:Z",
+        "onGround": "field_29179:Z",
+        "pitch": "field_12885:F",
+        "yaw": "field_12887:F"
+      },
+      "eu/client/mixins/accessors/PlayerPositionAccessor": {
+        "pitch": "comp_3151:F",
+        "yaw": "comp_3150:F"
+      },
+      "eu/client/mixins/accessors/PostEffectProcessorAccessor": {
+        "passes": "field_1497:Ljava/util/List;"
+      },
+      "eu/client/mixins/accessors/RenderLayerMultiPhaseAccessor": {
+        "getPhases": "method_35784()Lnet/minecraft/class_1921$class_4688;"
+      },
+      "eu/client/mixins/accessors/RenderLayerMultiPhaseParametersAccessor": {
+        "outlineMode": "field_21852:Lnet/minecraft/class_1921$class_4750;",
+        "texture": "field_21406:Lnet/minecraft/class_4668$class_5939;"
+      },
+      "eu/client/mixins/accessors/RenderPhaseTextureBaseAccessor": {
+        "getId": "method_23564()Ljava/util/Optional;"
+      },
+      "eu/client/mixins/accessors/StyleAccessor": {
+        "<init>": "<init>"
+      },
+      "eu/client/mixins/accessors/TextColorAccessor": {
+        "<init>": "<init>"
+      },
+      "eu/client/mixins/accessors/TextRendererAccessor": {
+        "drawLayer": "method_1724(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/class_4597;Lnet/minecraft/class_327$class_6415;IIZ)F",
+        "tweakTransparency": "method_27515(I)I"
+      },
+      "eu/client/mixins/accessors/Vec3dAccessor": {
+        "x": "field_1352:D",
+        "y": "field_1351:D",
+        "z": "field_1350:D"
+      },
+      "eu/client/mixins/accessors/WorldRendererAccessor": {
+        "entityOutlineFramebuffer": "field_53080:Lnet/minecraft/class_276;",
+        "frustum": "field_27740:Lnet/minecraft/class_4604;"
+      }
+    }
+  }
+}

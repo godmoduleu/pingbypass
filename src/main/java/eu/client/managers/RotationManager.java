@@ -1,11 +1,12 @@
 package eu.client.managers;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.*;
 import eu.client.mixins.accessors.EntityAccessor;
 import eu.client.modules.Module;
+import eu.client.modules.impl.core.RotationsModule;
 import eu.client.utils.IMinecraft;
 import eu.client.utils.animations.Easing;
 import eu.client.utils.rotations.Rotation;
@@ -18,18 +19,15 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class RotationManager implements IMinecraft {
     private final PriorityBlockingQueue<Rotation> queue = new PriorityBlockingQueue<>(11, this::compareRotations);
-    @Getter
-    private Rotation rotation = null;
+    @Getter private Rotation rotation = null;
 
     private float prevFixYaw;
 
     private float prevYaw;
     private float prevPitch;
 
-    @Getter
-    private float serverYaw;
-    @Getter
-    private float serverPitch;
+    @Getter private float serverYaw;
+    @Getter private float serverPitch;
 
     private float prevRenderYaw, prevRenderPitch;
     private long lastRenderTime = 0L;
@@ -43,7 +41,7 @@ public class RotationManager implements IMinecraft {
     }
 
     public RotationManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
     }
 
     @SubscribeEvent(priority = Integer.MIN_VALUE)
@@ -51,20 +49,18 @@ public class RotationManager implements IMinecraft {
         queue.removeIf(rotation -> System.currentTimeMillis() - rotation.getTime() > 100);
         rotation = queue.peek();
 
-        if (rotation == null)
-            return;
+        if (rotation == null) return;
         lastRenderTime = System.currentTimeMillis();
     }
 
     @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onUpdateMovement(UpdateMovementEvent event) {
-        if (rotation == null)
-            return;
+        if (rotation == null) return;
         // On the proxy, don't modify mc.player's yaw/pitch — the client sends
         // its own movement packets and we don't want the proxy's player entity
         // to visibly rotate. Packet rotations are sent directly to the server.
         if (eu.client.pingbypass.PingBypassFlags.proxyForwardingActive
-                && Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()) {
+                && EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()) {
             return;
         }
 
@@ -77,10 +73,9 @@ public class RotationManager implements IMinecraft {
 
     @SubscribeEvent(priority = Integer.MIN_VALUE)
     public void onUpdateMovement$POST(UpdateMovementEvent.Post event) {
-        if (rotation == null)
-            return;
+        if (rotation == null) return;
         if (eu.client.pingbypass.PingBypassFlags.proxyForwardingActive
-                && Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()) {
+                && EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()) {
             return;
         }
 
@@ -90,30 +85,58 @@ public class RotationManager implements IMinecraft {
 
     @SubscribeEvent
     public void onUpdateVelocity(UpdateVelocityEvent event) {
-        if (mc.player == null)
-            return;
+        if (mc.player == null) return;
+        if (!EUClient.MODULE_MANAGER.getModule(RotationsModule.class).movementFix.getValue()) return;
+        if (rotation == null) return;
+
+        event.setVelocity(EntityAccessor.invokeMovementInputToVelocity(event.getMovementInput(), event.getSpeed(), rotation.getYaw()));
+        event.setCancelled(true);
     }
 
     @SubscribeEvent
     public void onKeyboardTick(KeyboardTickEvent event) {
+        if (mc.player == null || mc.world == null || mc.player.isRiding()) return;
+        if (!EUClient.MODULE_MANAGER.getModule(RotationsModule.class).movementFix.getValue()) return;
+        if (rotation == null) return;
+
+        float movementForward = event.getMovementForward();
+        float movementSideways = event.getMovementSideways();
+
+        float delta = (mc.player.getYaw() - rotation.getYaw()) * MathHelper.RADIANS_PER_DEGREE;
+
+        float cos = MathHelper.cos(delta);
+        float sin = MathHelper.sin(delta);
+
+        event.setMovementForward(Math.round(movementForward * cos + movementSideways * sin));
+        event.setMovementSideways(Math.round(movementSideways * cos - movementForward * sin));
+        event.setCancelled(true);
     }
 
     @SubscribeEvent
     public void onPlayerJump(PlayerJumpEvent event) {
+        if (mc.player == null || mc.world == null || mc.player.isRiding()) return;
+        if (!EUClient.MODULE_MANAGER.getModule(RotationsModule.class).movementFix.getValue()) return;
+        if (rotation == null) return;
+
+        prevFixYaw = mc.player.getYaw();
+        mc.player.setYaw(rotation.getYaw());
     }
 
     @SubscribeEvent
     public void onPlayerJump$POST(PlayerJumpEvent.Post event) {
+        if (mc.player == null || mc.world == null || mc.player.isRiding()) return;
+        if (!EUClient.MODULE_MANAGER.getModule(RotationsModule.class).movementFix.getValue()) return;
+        if (rotation == null) return;
+
+        mc.player.setYaw(prevFixYaw);
     }
 
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent event) {
-        if (mc.player == null)
-            return;
+        if (mc.player == null) return;
 
         if (event.getPacket() instanceof PlayerMoveC2SPacket packet) {
-            if (!packet.changesLook())
-                return;
+            if (!packet.changesLook()) return;
 
             serverYaw = packet.getYaw(mc.player.getYaw());
             serverPitch = packet.getPitch(mc.player.getPitch());
@@ -152,16 +175,15 @@ public class RotationManager implements IMinecraft {
     }
 
     public void packetRotate(float yaw, float pitch) {
-        if (serverYaw == yaw && serverPitch == pitch)
-            return;
+        if (serverYaw == yaw && serverPitch == pitch) return;
         // On the proxy, send the rotation directly to the server connection,
         // bypassing mc.getNetworkHandler() so the proxy's local player state
         // is never touched. The proxy's player entity doesn't visibly rotate
         // because onUpdateMovement is also skipped when proxy is active.
         if (eu.client.pingbypass.PingBypassFlags.proxyForwardingActive
-                && Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()
-                && Pingbypass.PROXY_SERVER != null) {
-            var serverConn = Pingbypass.PROXY_SERVER.getServerConnection();
+                && EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()
+                && EUClient.PROXY_SERVER != null) {
+            var serverConn = EUClient.PROXY_SERVER.getServerConnection();
             if (serverConn != null && serverConn.isOpen()) {
                 var packet = new PlayerMoveC2SPacket.Full(
                         mc.player.getX(), mc.player.getY(), mc.player.getZ(),
@@ -171,9 +193,9 @@ public class RotationManager implements IMinecraft {
             }
         }
         mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.Full(
-                Pingbypass.POSITION_MANAGER.getServerX(), Pingbypass.POSITION_MANAGER.getServerY(),
-                Pingbypass.POSITION_MANAGER.getServerZ(), yaw, pitch,
-                Pingbypass.POSITION_MANAGER.isServerOnGround(), mc.player.horizontalCollision));
+                EUClient.POSITION_MANAGER.getServerX(), EUClient.POSITION_MANAGER.getServerY(),
+                EUClient.POSITION_MANAGER.getServerZ(), yaw, pitch,
+                EUClient.POSITION_MANAGER.isServerOnGround(), mc.player.horizontalCollision));
     }
 
     public boolean inRenderTime() {
@@ -181,21 +203,17 @@ public class RotationManager implements IMinecraft {
     }
 
     public float[] getRenderRotations() {
-        float from = MathUtils.wrapAngle(prevRenderYaw),
-                to = MathUtils.wrapAngle(rotation == null ? mc.player.getYaw() : getServerYaw());
+        float from = MathUtils.wrapAngle(prevRenderYaw), to = MathUtils.wrapAngle(rotation == null ? mc.player.getYaw() : getServerYaw());
         float delta = to - from;
-        if (delta > 180)
-            delta -= 380;
-        else if (delta < -180)
-            delta += 360;
+        if(delta > 180) delta -= 380;
+        else if(delta < -180) delta += 360;
 
         float yaw = MathHelper.lerp(Easing.toDelta(lastRenderTime, 1000), from, from + delta);
-        float pitch = MathHelper.lerp(Easing.toDelta(lastRenderTime, 1000), prevRenderPitch,
-                rotation == null ? mc.player.getPitch() : getServerPitch());
+        float pitch = MathHelper.lerp(Easing.toDelta(lastRenderTime, 1000), prevRenderPitch, rotation == null ? mc.player.getPitch() : getServerPitch());
         prevRenderYaw = yaw;
         prevRenderPitch = pitch;
 
-        return new float[] { yaw, pitch };
+        return new float[]{yaw, pitch};
     }
 
     public int getModulePriority(Module module) {
@@ -203,8 +221,7 @@ public class RotationManager implements IMinecraft {
     }
 
     private int compareRotations(Rotation target, Rotation rotation) {
-        if (target.getPriority() == rotation.getPriority())
-            return -Long.compare(target.getTime(), rotation.getTime());
+        if (target.getPriority() == rotation.getPriority()) return -Long.compare(target.getTime(), rotation.getTime());
         return -Integer.compare(target.getPriority(), rotation.getPriority());
     }
 }

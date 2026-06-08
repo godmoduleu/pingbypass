@@ -1,6 +1,6 @@
 package eu.client.modules.impl.combat;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.PlayerUpdateEvent;
 import eu.client.modules.Module;
@@ -63,7 +63,7 @@ public class SelfTrapModule extends Module {
 
             if (autoSwitch.getValue().equalsIgnoreCase("None") && !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("You are currently not holding any blocks.", getName());
+                    EUClient.CHAT_MANAGER.tagged("You are currently not holding any blocks.", getName());
                     setToggled(false);
                 }
 
@@ -83,7 +83,7 @@ public class SelfTrapModule extends Module {
 
             if (slot == -1) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("No blocks could be found in your hotbar.", getName());
+                    EUClient.CHAT_MANAGER.tagged("No blocks could be found in your hotbar.", getName());
                     setToggled(false);
                 }
 

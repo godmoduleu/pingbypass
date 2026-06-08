@@ -4,6 +4,10 @@ import eu.client.pingbypass.protocol.PbPacket;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
+/**
+ * Server → Client: Sync a block placement render position from proxy to client.
+ * Packet ID: 11
+ */
 public class S2CBlockRenderPacket extends PbPacket {
     public static final int ID = 11;
 

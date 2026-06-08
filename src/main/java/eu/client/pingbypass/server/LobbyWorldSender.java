@@ -19,12 +19,19 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Sends a minimal fake "lobby" world to the client when the proxy is not
+ * connected to any real Minecraft server.
+ */
 public class LobbyWorldSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyWorldSender.class);
 
     private LobbyWorldSender() {
     }
 
+    /**
+     * Sends a minimal world using the provided registry manager (must contain dimension_type).
+     */
     public static void sendLobbyWorld(ClientConnection toClient, DynamicRegistryManager registryManager) {
         LOGGER.info("Sending lobby world to client...");
         try {
@@ -47,6 +54,8 @@ public class LobbyWorldSender {
                     new PlayerPosition(new Vec3d(0, 240, 0), Vec3d.ZERO, 0f, 0f),
                     Set.of()));
 
+            // Signal that chunks are coming (even though we send none) so the client
+            // leaves "Loading Terrain" screen
             send(toClient, new GameStateChangeS2CPacket(GameStateChangeS2CPacket.INITIAL_CHUNKS_COMING, 0.0f));
 
             LOGGER.info("Lobby world sent successfully.");

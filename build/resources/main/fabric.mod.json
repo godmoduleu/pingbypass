@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "euclient",
+	"version": "0.0.1",
+	"name": "EUClient",
+	"description": "EUClient is a Minecraft utility mod aimed at anarchy servers, giving you useful features for combat and utility.",
+	"authors": [
+		"EU",
+		"p4nda",
+		"TheNano"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "GPL-3.0",
+	"icon": "assets/euclient/icon.png",
+	"environment": "*",
+	"accessWidener" : "euclient.accesswidener",
+	"entrypoints": {
+		"main": [
+			"eu.client.EUClient"
+		]
+	},
+	"mixins": [
+		"euclient.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.2",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

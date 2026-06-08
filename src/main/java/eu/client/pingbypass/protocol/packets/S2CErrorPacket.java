@@ -3,6 +3,11 @@ package eu.client.pingbypass.protocol.packets;
 import eu.client.pingbypass.protocol.PbPacket;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Server → Client: Send an error message.
+ * Packet ID: 7
+ * Payload: message (String)
+ */
 public class S2CErrorPacket extends PbPacket {
     public static final int ID = 7;
 

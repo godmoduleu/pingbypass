@@ -1,7 +1,8 @@
 package eu.client.managers;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
+import eu.client.modules.impl.core.FriendModule;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,14 +12,12 @@ public class FriendManager {
     private final ArrayList<String> friends = new ArrayList<>();
 
     public boolean contains(String name) {
-        if (getFriendFire())
-            return false;
+        if (getFriendFire()) return false;
         return friends.stream().anyMatch(name::equalsIgnoreCase);
     }
 
     public void add(String name) {
-        if (contains(name))
-            return;
+        if (contains(name)) return;
         friends.add(name);
     }
 
@@ -31,10 +30,11 @@ public class FriendManager {
     }
 
     public boolean getFriendFire() {
-        return false;
+        return EUClient.MODULE_MANAGER.getModule(FriendModule.class).friendlyFire.getValue();
     }
 
     public void sendFriendMessage(String name) {
+        EUClient.MODULE_MANAGER.getModule(FriendModule.class).sendFriendMessage(name);
     }
 
     public Color getDefaultFriendColor() {

@@ -1,6 +1,6 @@
 package eu.client.pingbypass.input;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.MouseInputEvent;
 import eu.client.pingbypass.PingBypassFlags;
@@ -9,12 +9,17 @@ import eu.client.pingbypass.protocol.packets.C2SInputPacket;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
+/**
+ * Forwards mouse input from the client to the proxy server.
+ * The proxy replays these inputs through its game loop, generating
+ * properly sequenced packets (block placement, item use, etc.).
+ */
 public class ClientInputForwarder {
 
     @SubscribeEvent
     public void onMouseInput(MouseInputEvent event) {
         if (!PingBypassFlags.proxyForwardingActive) return;
-        if (Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()) return;
+        if (EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()) return;
 
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.getNetworkHandler() == null) return;
@@ -32,16 +37,16 @@ public class ClientInputForwarder {
             var payload = PbCustomPayload.fromPacket(new C2SInputPacket(type, button, action));
             mc.getNetworkHandler().getConnection().send(new CustomPayloadC2SPacket(payload));
         } catch (Exception e) {
-            Pingbypass.LOGGER.warn("[PingBypass] Failed to send input", e);
+            EUClient.LOGGER.warn("[PingBypass] Failed to send input", e);
         }
     }
 
     public void start() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
-        Pingbypass.LOGGER.info("[PingBypass] Client input forwarder started");
+        EUClient.EVENT_HANDLER.subscribe(this);
+        EUClient.LOGGER.info("[PingBypass] Client input forwarder started");
     }
 
     public void stop() {
-        Pingbypass.EVENT_HANDLER.unsubscribe(this);
+        EUClient.EVENT_HANDLER.unsubscribe(this);
     }
 }

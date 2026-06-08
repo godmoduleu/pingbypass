@@ -1,7 +1,7 @@
 package eu.client.pingbypass.handler;
 
 import com.mojang.authlib.GameProfile;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.modules.Module;
 import eu.client.pingbypass.server.ProxyServer;
 import eu.client.pingbypass.server.ProxyServerTickListener;
@@ -88,7 +88,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
      * doesn't switch back to pickaxe (which would cancel eating).
      */
     private void syncSlotForInteract() {
-        var speedMine = Pingbypass.MODULE_MANAGER.getModule(
+        var speedMine = EUClient.MODULE_MANAGER.getModule(
                 eu.client.modules.impl.player.SpeedMineModule.class);
         if (speedMine != null && speedMine.isToggled() && speedMine.isRunningOnProxy()
                 && (speedMine.getPrimary() != null || speedMine.getSecondary() != null)) {
@@ -159,7 +159,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
     @Override public void onPlayerAction(PlayerActionC2SPacket p) {
         // When the client releases item use (finishes eating), unpause SpeedMine
         if (p.getAction() == PlayerActionC2SPacket.Action.RELEASE_USE_ITEM) {
-            var speedMine = Pingbypass.MODULE_MANAGER.getModule(
+            var speedMine = EUClient.MODULE_MANAGER.getModule(
                     eu.client.modules.impl.player.SpeedMineModule.class);
             if (speedMine != null && speedMine.isInteractPaused()) {
                 speedMine.setInteractPaused(false);
@@ -174,7 +174,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
             if (mc.player != null) {
                 mc.execute(() -> {
                     var event = new eu.client.events.impl.AttackBlockEvent(p.getPos(), p.getDirection());
-                    Pingbypass.EVENT_HANDLER.post(event);
+                    EUClient.EVENT_HANDLER.post(event);
                     if (!event.isCancelled()) {
                         forward(p);
                     }
@@ -213,7 +213,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
         // client's slot change to the real server — SpeedMine controls the
         // server's slot state directly via serverSend(). Forwarding would
         // override the pickaxe with food and break mining.
-        var speedMine = Pingbypass.MODULE_MANAGER.getModule(
+        var speedMine = EUClient.MODULE_MANAGER.getModule(
                 eu.client.modules.impl.player.SpeedMineModule.class);
         if (speedMine != null && speedMine.isToggled() && speedMine.isRunningOnProxy()
                 && (speedMine.getPrimary() != null || speedMine.getSecondary() != null)) {
@@ -311,7 +311,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
             switch (packetId) {
                 case eu.client.pingbypass.protocol.packets.C2SModuleTogglePacket.ID -> {
                     var pkt = new eu.client.pingbypass.protocol.packets.C2SModuleTogglePacket(buf);
-                    Module module = Pingbypass.MODULE_MANAGER.getModule(pkt.getModuleName());
+                    Module module = EUClient.MODULE_MANAGER.getModule(pkt.getModuleName());
                     if (module != null) {
                         MinecraftClient.getInstance().execute(() -> {
                             module.setToggled(pkt.isEnabled(), false);
@@ -333,7 +333,7 @@ public class PbPlayHandler implements ServerPlayPacketListener, TickablePacketLi
     }
 
     private void handleSettingChange(eu.client.pingbypass.protocol.packets.C2SSettingChangePacket pkt) {
-        Module module = Pingbypass.MODULE_MANAGER.getModule(pkt.getModuleName());
+        Module module = EUClient.MODULE_MANAGER.getModule(pkt.getModuleName());
         if (module == null) return;
 
         eu.client.settings.Setting setting = module.getSetting(pkt.getSettingName());

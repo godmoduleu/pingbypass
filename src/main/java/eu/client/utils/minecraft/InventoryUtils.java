@@ -1,6 +1,6 @@
 package eu.client.utils.minecraft;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.mixins.accessors.ClientPlayerInteractionManagerAccessor;
 import eu.client.utils.IMinecraft;
 import net.minecraft.block.BlockState;
@@ -25,7 +25,7 @@ public class InventoryUtils implements IMinecraft {
 
     public static void switchSlot(String mode, int slot, int previousSlot) {
         if (mode.equalsIgnoreCase("None")) return;
-        if (slot == -1 || previousSlot == -1 || slot == Pingbypass.POSITION_MANAGER.getServerSlot()) return;
+        if (slot == -1 || previousSlot == -1 || slot == EUClient.POSITION_MANAGER.getServerSlot()) return;
 
         switch (mode) {
             case "Normal" -> {
@@ -44,7 +44,7 @@ public class InventoryUtils implements IMinecraft {
 
         switch (mode) {
             case "Silent" -> {
-                if (previousSlot == Pingbypass.POSITION_MANAGER.getServerSlot()) return;
+                if (previousSlot == EUClient.POSITION_MANAGER.getServerSlot()) return;
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(previousSlot));
             }
             case "AltPickup" -> swap("Pickup", slot, previousSlot);

@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Netty-based proxy server that speaks the Minecraft protocol.
+ * Accepts client connections and manages the pipeline using vanilla codec classes.
+ */
 public class ProxyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyServer.class);
 
@@ -59,11 +63,20 @@ public class ProxyServer {
         this.protocolHandler.registerStayHandler(this);
     }
 
+    /**
+     * Initializes the proxy module manager and registers module protocol handlers.
+     * Must be called after {@code EUClient.MODULE_MANAGER} is initialized, since
+     * the proxy reuses the real module instances from the client's ModuleManager.
+     */
     public void initModules() {
         this.moduleManager.init();
         this.protocolHandler.registerModuleHandlers(this.moduleManager);
     }
 
+    /**
+     * Binds the proxy server to the given address and port using Netty ServerBootstrap.
+     * Uses Epoll transport on Linux when available, NIO fallback otherwise.
+     */
     public void bind(InetAddress address, int port) throws IOException {
         LOGGER.info("PingBypass proxy binding to {}:{}", address, port);
         synchronized (this.endpoints) {
@@ -93,13 +106,19 @@ public class ProxyServer {
                             ChannelPipeline pipeline = channel.pipeline()
                                     .addLast("timeout", new ReadTimeoutHandler(30));
 
+                            // Add the Minecraft codec chain: splitter → decoder → prepender → encoder
                             ClientConnection.addHandlers(pipeline, NetworkSide.SERVERBOUND, false, null);
 
+                            // Create a new PbSession for this incoming connection.
+                            // PbSession overrides transitionOutbound/transitionInbound to
+                            // bypass Fabric's Lambda-based pipeline transitions.
                             ClientConnection connection = new PbSession();
                             ProxyServer.this.connections.add(connection);
 
+                            // Add the connection as the packet handler in the pipeline
                             connection.addFlowControlHandler(pipeline);
 
+                            // Set the initial handshake handler
                             connection.setInitialPacketListener(new eu.client.pingbypass.handler.PbHandshakeHandler(
                                     ProxyServer.this, connection));
                         }
@@ -113,6 +132,9 @@ public class ProxyServer {
         }
     }
 
+    /**
+     * Called each server tick to process queued packets on all active connections.
+     */
     public void tick() {
         synchronized (this.connections) {
             Iterator<ClientConnection> iterator = this.connections.iterator();
@@ -137,6 +159,9 @@ public class ProxyServer {
         }
     }
 
+    /**
+     * Shuts down the proxy server, closing all channel endpoints and releasing resources.
+     */
     public void shutdown() {
         this.alive = false;
         LOGGER.info("Shutting down PingBypass proxy server...");
@@ -205,6 +230,9 @@ public class ProxyServer {
         return registryCache;
     }
 
+    /**
+     * Simple lazy initializer for event loop groups.
+     */
     private static class Lazy<T> {
         private final java.util.function.Supplier<T> supplier;
         private volatile T value;

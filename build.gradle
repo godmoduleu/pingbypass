@@ -77,7 +77,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/pingbypass.accesswidener")
+	accessWidenerPath = file("src/main/resources/euclient.accesswidener")
 }
 
 java {

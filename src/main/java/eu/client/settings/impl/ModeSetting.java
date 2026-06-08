@@ -2,7 +2,7 @@ package eu.client.settings.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.impl.SettingChangeEvent;
 import eu.client.settings.Setting;
 
@@ -46,7 +46,7 @@ public class ModeSetting extends Setting {
     public void setValue(String value) {
         if (!modes.contains(value)) return;
         this.value = value;
-        Pingbypass.EVENT_HANDLER.post(new SettingChangeEvent(this));
+        EUClient.EVENT_HANDLER.post(new SettingChangeEvent(this));
     }
 
 

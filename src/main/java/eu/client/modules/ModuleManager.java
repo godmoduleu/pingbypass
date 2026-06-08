@@ -2,7 +2,7 @@ package eu.client.modules;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.KeyInputEvent;
 import eu.client.events.impl.MouseInputEvent;
@@ -23,7 +23,7 @@ public class ModuleManager implements IMinecraft {
     private final Map<Class<? extends Module>, Module> moduleClasses = new Reference2ReferenceOpenHashMap<>();
 
     public ModuleManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
 
         try {
             for (Class<?> clazz : new Reflections("eu.client.modules.impl").getSubTypesOf(Module.class)) {
@@ -49,7 +49,7 @@ public class ModuleManager implements IMinecraft {
                 moduleClasses.put(module.getClass(), module);
             }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-            Pingbypass.LOGGER.error("Failed to register the client's modules!", exception);
+            EUClient.LOGGER.error("Failed to register the client's modules!", exception);
         }
 
         modules.sort(Comparator.comparing(Module::getName));

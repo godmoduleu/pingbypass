@@ -1,7 +1,7 @@
 package eu.client.managers;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.PacketSendEvent;
 import eu.client.utils.IMinecraft;
@@ -12,7 +12,7 @@ import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 @Getter
 public class PositionManager implements IMinecraft {
     public PositionManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
     }
 
     private double serverX;
@@ -28,8 +28,7 @@ public class PositionManager implements IMinecraft {
 
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent event) {
-        if (mc.player == null)
-            return;
+        if (mc.player == null) return;
 
         if (event.getPacket() instanceof PlayerMoveC2SPacket packet) {
             if (packet.changesPosition()) {
@@ -51,8 +50,6 @@ public class PositionManager implements IMinecraft {
                 case STOP_SPRINTING -> serverSprinting = false;
                 case PRESS_SHIFT_KEY -> serverSneaking = true;
                 case RELEASE_SHIFT_KEY -> serverSneaking = false;
-                default -> {
-                }
             }
         }
     }

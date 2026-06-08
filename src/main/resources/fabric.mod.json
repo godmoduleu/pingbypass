@@ -1,29 +1,29 @@
 {
 	"schemaVersion": 1,
-	"id": "pingbypass",
+	"id": "euclient",
 	"version": "${version}",
-	"name": "Pingbypass",
-	"description": "Pingbypass is a Minecraft utility mod aimed at anarchy servers, giving you useful features for combat and utility.",
+	"name": "EUClient",
+	"description": "EUClient is a Minecraft utility mod aimed at anarchy servers, giving you useful features for combat and utility.",
 	"authors": [
-		"Tinkoprof",
-		"Ezzoris",
-		"Godmodule"
+		"EU",
+		"p4nda",
+		"TheNano"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "GPL-3.0",
-	"icon": "assets/pingbypass/icon.png",
+	"icon": "assets/euclient/icon.png",
 	"environment": "*",
-	"accessWidener" : "pingbypass.accesswidener",
+	"accessWidener" : "euclient.accesswidener",
 	"entrypoints": {
 		"main": [
-			"eu.client.Pingbypass"
+			"eu.client.EUClient"
 		]
 	},
 	"mixins": [
-		"pingbypass.mixins.json"
+		"euclient.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.2",

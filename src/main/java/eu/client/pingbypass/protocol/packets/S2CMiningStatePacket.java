@@ -5,6 +5,10 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Server → Client: Sync SpeedMine mining state (position + progress) for rendering.
+ * Packet ID: 12
+ */
 public class S2CMiningStatePacket extends PbPacket {
     public static final int ID = 12;
 

@@ -2,12 +2,14 @@ package eu.client.modules.impl.player;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.*;
 import eu.client.modules.Module;
 import eu.client.modules.RegisterModule;
 import eu.client.settings.impl.*;
+import eu.client.utils.color.ColorUtils;
+import eu.client.utils.graphics.Renderer3D;
 import eu.client.utils.minecraft.HoleUtils;
 import eu.client.utils.minecraft.InventoryUtils;
 import eu.client.utils.minecraft.NetworkUtils;
@@ -32,52 +34,37 @@ import java.util.List;
 
 @RegisterModule(name = "SpeedMine", description = "Automatically mines blocks at a faster speed using packets.", category = Module.Category.PLAYER, proxyEnhanced = true)
 public class SpeedMineModule extends Module {
-    public ModeSetting switchMode = new ModeSetting("Switch",
-            "The mode that will be used for automatically switching to the fastest item.", "Silent",
-            InventoryUtils.SWITCH_MODES);
-    public NumberSetting range = new NumberSetting("Range", "The maximum distance at which blocks will be mined.", 6.0,
-            0.0, 8.0);
-    public NumberSetting speed = new NumberSetting("Speed", "The speed at which the module will mine blocks.", 1.0, 0.7,
-            1.0);
-    public ModeSetting rotate = new ModeSetting("Rotate", "Automatically rotates to the block when mining it.",
-            "Packet", new String[] { "None", "Normal", "Packet" });
+    public ModeSetting switchMode = new ModeSetting("Switch", "The mode that will be used for automatically switching to the fastest item.", "Silent", InventoryUtils.SWITCH_MODES);
+    public NumberSetting range = new NumberSetting("Range", "The maximum distance at which blocks will be mined.", 6.0, 0.0, 8.0);
+    public NumberSetting speed = new NumberSetting("Speed", "The speed at which the module will mine blocks.", 1.0, 0.7, 1.0);
+    public ModeSetting rotate = new ModeSetting("Rotate", "Automatically rotates to the block when mining it.", "Packet", new String[]{"None", "Normal", "Packet"});
 
-    public BooleanSetting auto = new BooleanSetting("Auto",
-            "Automatically mines blocks deemed optimal for defeating your opponents.", false);
-    public BooleanSetting cityOnly = new BooleanSetting("CityOnly", "Only mines the target's city positions.",
-            new BooleanSetting.Visibility(auto, true), false);
-    public BooleanSetting holeCheck = new BooleanSetting("HoleCheck", "Only mine the player in hole.",
-            new BooleanSetting.Visibility(auto, true), false);
-    public BooleanSetting switchReset = new BooleanSetting("SwitchReset", "Resets the mining when switching slots.",
-            new ModeSetting.Visibility(switchMode, "None", "AltSwap", "AltPickup"), true);
-    public BooleanSetting doubleMine = new BooleanSetting("Double", "Allows the mining of 2 blocks at the same time.",
-            false);
-    public ModeSetting sequence = new ModeSetting("Sequence", "Sequence of mining for double mine",
-            new BooleanSetting.Visibility(doubleMine, true), "Surround", new String[] { "Surround", "Phase" });
-    public BooleanSetting instant = new BooleanSetting("Instant",
-            "Instantly mines blocks once they have been replaced.", false);
-    public NumberSetting instantDelay = new NumberSetting("InstantDelay",
-            "The amount of time that has to pass before instantly mining blocks.",
-            new BooleanSetting.Visibility(instant, true), 0, 0, 20);
-    public NumberSetting instantTimeout = new NumberSetting("InstantTimeout",
-            "The amount of time that cancel instantly mine while no block to mine.",
-            new BooleanSetting.Visibility(instant, true), 60, 0, 100);
+    public BooleanSetting auto = new BooleanSetting("Auto", "Automatically mines blocks deemed optimal for defeating your opponents.", false);
+    public BooleanSetting cityOnly = new BooleanSetting("CityOnly", "Only mines the target's city positions.", new BooleanSetting.Visibility(auto, true), false);
+    public BooleanSetting holeCheck = new BooleanSetting("HoleCheck", "Only mine the player in hole.", new BooleanSetting.Visibility(auto, true), false);
+    public BooleanSetting switchReset = new BooleanSetting("SwitchReset", "Resets the mining when switching slots.", new ModeSetting.Visibility(switchMode, "None", "AltSwap", "AltPickup"), true);
+    public BooleanSetting doubleMine = new BooleanSetting("Double", "Allows the mining of 2 blocks at the same time.", false);
+    public ModeSetting sequence = new ModeSetting("Sequence", "Sequence of mining for double mine", new BooleanSetting.Visibility(doubleMine, true), "Surround", new String[]{"Surround", "Phase"});
+    public BooleanSetting instant = new BooleanSetting("Instant", "Instantly mines blocks once they have been replaced.", false);
+    public NumberSetting instantDelay = new NumberSetting("InstantDelay", "The amount of time that has to pass before instantly mining blocks.", new BooleanSetting.Visibility(instant, true), 0, 0, 20);
+    public NumberSetting instantTimeout = new NumberSetting("InstantTimeout", "The amount of time that cancel instantly mine while no block to mine.", new BooleanSetting.Visibility(instant, true), 60, 0, 100);
     public BooleanSetting grim = new BooleanSetting("Grim", "Adds a bypass catered to the Grim anticheat.", false);
-    public BooleanSetting clientRemove = new BooleanSetting("ClientRemove",
-            "Removes the block client-side immediately for instant visual feedback.", true);
-    public BooleanSetting strict = new BooleanSetting("Strict",
-            "Waits for the server to tick you before switching back.", false);
+    public BooleanSetting clientRemove = new BooleanSetting("ClientRemove", "Removes the block client-side immediately for instant visual feedback.", true);
+    public BooleanSetting strict = new BooleanSetting("Strict", "Waits for the server to tick you before switching back.", false);
     public BooleanSetting whileEating = new BooleanSetting("WhileEating", "Mines blocks while eating.", true);
-    public WhitelistSetting whitelist = new WhitelistSetting("Whitelist",
-            "Mines only the blocks that are on this list. If empty, every block will be mined.",
-            WhitelistSetting.Type.BLOCKS);
+    public WhitelistSetting whitelist = new WhitelistSetting("Whitelist", "Mines only the blocks that are on this list. If empty, every block will be mined.", WhitelistSetting.Type.BLOCKS);
 
-    // Render settings removed for proxy headless mode
+    public CategorySetting renderCategory = new CategorySetting("Render", "The category containing all settings related to rendering.");
+    public ModeSetting render = new ModeSetting("Render", "Mode", "The rendering that will be applied to the blocks highlighted.", new CategorySetting.Visibility(renderCategory), "Both", new String[]{"None", "Fill", "Outline", "Both"});
+    public ModeSetting animation = new ModeSetting("Animation", "The animation that will be used when rendering the block mining progress.", new ModeSetting.Visibility(render, "Fill", "Outline", "Both"), "Expand", new String[]{"None", "Expand", "Rise"});
+    public ModeSetting color = new ModeSetting("Color", "The color that will be used when rendering the block mining.", new ModeSetting.Visibility(render, "Fill", "Outline", "Both"), "Smooth", new String[]{"Static", "Smooth", "Custom"});
+    public ColorSetting fillColor = new ColorSetting("FillColor", "The color used for the fill rendering.", new ModeSetting.Visibility(render, "Fill", "Both"), ColorUtils.getDefaultFillColor());
+    public ColorSetting outlineColor = new ColorSetting("OutlineColor", "The color used for the outline rendering.", new ModeSetting.Visibility(render, "Outline", "Both"), ColorUtils.getDefaultOutlineColor());
+    public ModeSetting instantRender = new ModeSetting("InstantRender", "Instant", "The color that will be used for rendering instantly mined blocks.", new CategorySetting.Visibility(renderCategory), "None", new String[]{"None", "Default", "Custom"});
+    public ColorSetting instantColor = new ColorSetting("InstantColor", "The custom color used for instantly mined blocks.", new ModeSetting.Visibility(instantRender, "Custom"), new ColorSetting.Color(new Color(148, 0, 211), false, false));
 
-    @Getter
-    private Action primary = null;
-    @Getter
-    private Action secondary = null;
+    @Getter private Action primary = null;
+    @Getter private Action secondary = null;
 
     private SwitchAction switchAction = null;
 
@@ -89,8 +76,7 @@ public class SpeedMineModule extends Module {
      * Set by PbPlayHandler when the client sends an interact packet,
      * cleared when the client sends RELEASE_USE_ITEM.
      */
-    @Getter
-    private volatile boolean interactPaused = false;
+    @Getter private volatile boolean interactPaused = false;
     private boolean needsRestart = false;
 
     public void setInteractPaused(boolean paused) {
@@ -110,82 +96,60 @@ public class SpeedMineModule extends Module {
 
     @SubscribeEvent
     public void onPlayerUpdate(PlayerUpdateEvent event) {
-        if (shouldRunOnProxy())
-            return;
-        if (mc.player == null || mc.world == null)
-            return;
+        if (shouldRunOnProxy()) return;
+        if (mc.player == null || mc.world == null) return;
 
-        if (doubleMine.getValue() && secondary != null && secondary.process())
-            secondary = null;
-        if (primary != null && primary.process())
-            primary = null;
+        if (doubleMine.getValue() && secondary != null && secondary.process()) secondary = null;
+        if (primary != null && primary.process()) primary = null;
 
         // Sync mining state to the client for rendering
-        if (isRunningOnProxy() && Pingbypass.PROXY_SERVER != null) {
+        if (isRunningOnProxy() && EUClient.PROXY_SERVER != null) {
             syncMiningStateToClient();
         }
 
-        if (!auto.getValue())
-            return;
-        if ((primary != null && primary.getPriority() > 0 && !WorldUtils.isReplaceable(primary.getPosition()))
-                || (secondary != null && secondary.getPriority() > 0
-                        && !WorldUtils.isReplaceable(secondary.getPosition())))
+        if (!auto.getValue()) return;
+        if ((primary != null && primary.getPriority() > 0 && !WorldUtils.isReplaceable(primary.getPosition())) || (secondary != null && secondary.getPriority() > 0 && !WorldUtils.isReplaceable(secondary.getPosition())))
             return;
 
         Target target = getTarget();
 
         if (doubleMine.getValue()) {
-            if (!mineTimer.hasTimeElapsed(350L))
-                return;
+            if (!mineTimer.hasTimeElapsed(350L)) return;
 
             if (mc.player.isCrawling()) {
                 BlockPos position;
                 BlockPos playerPosition = mc.player.getBlockPos();
 
-                if (WorldUtils.canBreak(playerPosition.down()) && !WorldUtils.isReplaceable(playerPosition.down())
-                        && (!WorldUtils.isReplaceable(playerPosition.down(2))
-                                || HoleUtils.getSingleHole(playerPosition.down(2), 1, false) != null)) {
+                if (WorldUtils.canBreak(playerPosition.down()) && !WorldUtils.isReplaceable(playerPosition.down()) && (!WorldUtils.isReplaceable(playerPosition.down(2)) || HoleUtils.getSingleHole(playerPosition.down(2), 1, false) != null)) {
                     position = playerPosition.down();
                 } else {
                     position = playerPosition.up();
                 }
 
                 if (isValid(position) && !isOutOfRange(position)) {
-                    if (!isInvalid(position))
-                        handle(position, 0);
+                    if (!isInvalid(position)) handle(position, 0);
                     return;
                 }
             }
 
-            if ((primary != null && primary.isInstantMine()
-                    && !instantTimer.hasTimeElapsed(instantTimeout.getValue().longValue() * 50L)
-                    && primary.getAttempts() != 0) || secondary != null)
-                return;
+            if ((primary != null && primary.isInstantMine() && !instantTimer.hasTimeElapsed(instantTimeout.getValue().longValue() * 50L) && primary.getAttempts() != 0) || secondary != null) return;
 
             if (target != null) {
                 Runnable inside = () -> {
-                    List<BlockPos> insidePositions = HoleUtils.getInsidePositions(target.player()).stream()
-                            .filter(insidePosition -> !mc.world.getBlockState(insidePosition).isReplaceable()).toList();
-                    ;
+                    List<BlockPos> insidePositions = HoleUtils.getInsidePositions(target.player()).stream().filter(insidePosition -> !mc.world.getBlockState(insidePosition).isReplaceable()).toList();;
                     for (BlockPos position : insidePositions) {
-                        if (primary != null && secondary != null)
-                            break;
-                        if (isInvalid(position) || isOutOfRange(position))
-                            continue;
+                        if (primary != null && secondary != null) break;
+                        if (isInvalid(position) || isOutOfRange(position)) continue;
                         handle(position, 0);
                     }
                 };
                 Runnable outside = () -> {
-                    List<BlockPos> surroundPositions = HoleUtils.getFeetPositions(target.player(), true, false, true)
-                            .stream().filter(pos -> !mc.world.getBlockState(pos).isReplaceable()).toList();
+                    List<BlockPos> surroundPositions = HoleUtils.getFeetPositions(target.player(), true, false, true).stream().filter(pos -> !mc.world.getBlockState(pos).isReplaceable()).toList();
                     if (HoleUtils.isPlayerInHole(target.player()) || !holeCheck.getValue()) {
                         for (BlockPos position : surroundPositions) {
-                            if (primary != null && secondary != null)
-                                break;
-                            if (isMining(position))
-                                continue;
-                            if (isInvalid(position) || isOutOfRange(position))
-                                continue;
+                            if (primary != null && secondary != null) break;
+                            if (isMining(position)) continue;
+                            if (isInvalid(position) || isOutOfRange(position)) continue;
                             handle(position, 0);
                         }
                     }
@@ -204,15 +168,13 @@ public class SpeedMineModule extends Module {
             if (target == null) {
                 return;
             } else {
-                if (!WorldUtils.isReplaceable(target.player.getBlockPos())
-                        && !WorldUtils.getBlock(target.player().getBlockPos()).equals(Blocks.COBWEB)) {
+                if (!WorldUtils.isReplaceable(target.player.getBlockPos()) && !WorldUtils.getBlock(target.player().getBlockPos()).equals(Blocks.COBWEB)) {
                     position = target.player().getBlockPos();
                 } else if (HoleUtils.isPlayerInHole(target.player()) || !holeCheck.getValue()) {
                     position = target.position();
                 }
             }
-            if (position == null)
-                return;
+            if (position == null) return;
             if (primary != null && position.equals(primary.getPosition()))
                 return;
 
@@ -222,10 +184,8 @@ public class SpeedMineModule extends Module {
 
     @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onTick(TickEvent event) {
-        if (shouldRunOnProxy())
-            return;
-        if (switchAction == null)
-            return;
+        if (shouldRunOnProxy()) return;
+        if (switchAction == null) return;
         if (System.currentTimeMillis() - switchAction.time() < 100L)
             return;
 
@@ -238,8 +198,7 @@ public class SpeedMineModule extends Module {
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldEvent event) {
-        if (mc.player == null || mc.world == null)
-            return;
+        if (mc.player == null || mc.world == null) return;
 
         if (shouldRunOnProxy()) {
             // Client side: render using proxy-synced state
@@ -247,22 +206,16 @@ public class SpeedMineModule extends Module {
             return;
         }
 
-        if (doubleMine.getValue() && secondary != null)
-            secondary.render(event.getMatrices());
-        if (primary != null)
-            primary.render(event.getMatrices());
+        if (doubleMine.getValue() && secondary != null) secondary.render(event.getMatrices());
+        if (primary != null) primary.render(event.getMatrices());
     }
 
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent.Post event) {
-        if (shouldRunOnProxy())
-            return;
-        if (mc.player == null || mc.world == null)
-            return;
+        if (shouldRunOnProxy()) return;
+        if (mc.player == null || mc.world == null) return;
 
-        if (event.getPacket() instanceof UpdateSelectedSlotC2SPacket && switchReset.getValue()
-                && (switchMode.getValue().equalsIgnoreCase("AltSwap")
-                        || switchMode.getValue().equalsIgnoreCase("AltPickup"))) {
+        if (event.getPacket() instanceof UpdateSelectedSlotC2SPacket && switchReset.getValue() && (switchMode.getValue().equalsIgnoreCase("AltSwap") || switchMode.getValue().equalsIgnoreCase("AltPickup"))) {
             if (secondary != null) {
                 secondary.cancel();
                 secondary.start();
@@ -277,10 +230,8 @@ public class SpeedMineModule extends Module {
 
     @SubscribeEvent
     public void onAttackBlock(AttackBlockEvent event) {
-        if (shouldRunOnProxy())
-            return;
-        if (mc.player == null || mc.world == null)
-            return;
+        if (shouldRunOnProxy()) return;
+        if (mc.player == null || mc.world == null) return;
 
         if (handle(event.getPosition(), 1)) {
             event.setCancelled(true);
@@ -289,45 +240,33 @@ public class SpeedMineModule extends Module {
 
     @Override
     public String getMetaData() {
-        String primaryProgress = primary == null ? "0.0"
-                : new DecimalFormat("0.0").format(primary.getProgress() / primary.getSpeed());
-        String secondaryProgress = secondary == null || !doubleMine.getValue() ? ""
-                : ", " + new DecimalFormat("0.0").format(secondary.getProgress() / secondary.getSpeed());
+        String primaryProgress = primary == null ? "0.0" : new DecimalFormat("0.0").format(primary.getProgress() / primary.getSpeed());
+        String secondaryProgress = secondary == null || !doubleMine.getValue() ? "" : ", " + new DecimalFormat("0.0").format(secondary.getProgress() / secondary.getSpeed());
         return primaryProgress + secondaryProgress;
     }
 
     private boolean handle(BlockPos position, int priority) {
-        if (mc.interactionManager.getCurrentGameMode() == GameMode.CREATIVE
-                || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
-            return false;
-        if (mc.world.getBlockState(position).getBlock().getHardness() == -1)
-            return false;
-        if (!whitelist.getWhitelist().isEmpty()
-                && !whitelist.isWhitelistContains(mc.world.getBlockState(position).getBlock()))
-            return false;
-        if (mc.player.getEyePos().squaredDistanceTo(Vec3d.ofCenter(position)) > MathHelper
-                .square(range.getValue().doubleValue()))
+        if (mc.interactionManager.getCurrentGameMode() == GameMode.CREATIVE || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) return false;
+        if (mc.world.getBlockState(position).getBlock().getHardness() == -1) return false;
+        if (!whitelist.getWhitelist().isEmpty() && !whitelist.isWhitelistContains(mc.world.getBlockState(position).getBlock())) return false;
+        if (mc.player.getEyePos().squaredDistanceTo(Vec3d.ofCenter(position)) > MathHelper.square(range.getValue().doubleValue()))
             return false;
 
-        if ((primary != null && primary.getPosition().equals(position))
-                || (secondary != null && secondary.getPosition().equals(position)))
-            return true;
+        if ((primary != null && primary.getPosition().equals(position)) || (secondary != null && secondary.getPosition().equals(position))) return true;
 
         if (doubleMine.getValue()) {
             if (secondary != null) {
                 primary = new Action(position, priority);
             } else {
                 if (primary != null) {
-                    if (!primary.isInstantMine())
-                        secondary = primary;
+                    if (!primary.isInstantMine()) secondary = primary;
                     primary = new Action(position, priority);
                 } else {
                     primary = new Action(position, priority);
                 }
             }
         } else {
-            if (primary != null)
-                primary.cancel();
+            if (primary != null) primary.cancel();
             primary = new Action(position, priority);
         }
 
@@ -335,54 +274,41 @@ public class SpeedMineModule extends Module {
     }
 
     private boolean isInvalid(BlockPos position) {
-        if (!isValid(position))
-            return true;
+        if (!isValid(position)) return true;
         return isMining(position);
     }
 
     private boolean isValid(BlockPos position) {
-        if (position == null)
-            return false;
-        if (mc.world.getBlockState(position).getBlock().getHardness() == -1)
-            return false;
+        if (position == null) return false;
+        if (mc.world.getBlockState(position).getBlock().getHardness() == -1) return false;
         return !mc.world.getBlockState(position).getBlock().equals(Blocks.COBWEB);
     }
 
     private boolean isMining(BlockPos position) {
-        if (position == null)
-            return true;
-        if (primary != null && primary.getPosition().equals(position))
-            return true;
+        if (position == null) return true;
+        if (primary != null && primary.getPosition().equals(position)) return true;
         return secondary != null && secondary.getPosition().equals(position);
     }
 
     private boolean isOutOfRange(BlockPos position) {
-        if (position == null)
-            return true;
-        return mc.player.getEyePos().squaredDistanceTo(Vec3d.ofCenter(position)) > MathHelper
-                .square(range.getValue().doubleValue());
+        if (position == null) return true;
+        return mc.player.getEyePos().squaredDistanceTo(Vec3d.ofCenter(position)) > MathHelper.square(range.getValue().doubleValue());
     }
 
     private Target getTarget() {
         Target optimalTarget = null;
         for (PlayerEntity player : mc.world.getPlayers()) {
-            if (player == mc.player)
-                continue;
-            if (!player.isAlive() || player.getHealth() <= 0.0f)
-                continue;
-            if (mc.player.squaredDistanceTo(player) > MathHelper.square(range.getValue().doubleValue() + 2.0))
-                continue;
-            if (Pingbypass.FRIEND_MANAGER.contains(player.getName().getString()))
-                continue;
+            if (player == mc.player) continue;
+            if (!player.isAlive() || player.getHealth() <= 0.0f) continue;
+            if (mc.player.squaredDistanceTo(player) > MathHelper.square(range.getValue().doubleValue() + 2.0)) continue;
+            if (EUClient.FRIEND_MANAGER.contains(player.getName().getString())) continue;
 
             List<Position> feetPositions = getPositions(player);
             BlockPos position = getTargetPosition(feetPositions);
 
             if (!doubleMine.getValue()) {
-                if (feetPositions.isEmpty())
-                    continue;
-                if (position == null)
-                    continue;
+                if (feetPositions.isEmpty()) continue;
+                if (position == null) continue;
             }
 
             if (optimalTarget == null) {
@@ -403,33 +329,24 @@ public class SpeedMineModule extends Module {
         double optimalScore = 0.0;
 
         for (Position position : positions) {
-            if ((doubleMine.getValue() || cityOnly.getValue()) && !position.feetPosition())
-                continue;
-            if (!isValidPosition(position.position()))
-                continue;
-            if (HoleUtils.isPlayerInHole(mc.player)
-                    && HoleUtils.getFeetPositions(mc.player, true, false, true).contains(position.position()))
-                continue;
+            if ((doubleMine.getValue() || cityOnly.getValue()) && !position.feetPosition()) continue;
+            if (!isValidPosition(position.position())) continue;
+            if (HoleUtils.isPlayerInHole(mc.player) && HoleUtils.getFeetPositions(mc.player, true, false, true).contains(position.position())) continue;
 
             double score = 0.0;
 
             if (position.feetPosition()) {
                 score += 0.05;
 
-                if (mc.world.getBlockState(position.position()).getBlock() == Blocks.ENDER_CHEST)
-                    score += 0.95;
-                else if (WorldUtils.isCrystalPlaceable(position.position().add(0, 1, 0)))
-                    score += 0.35;
-                if (hasCityPosition(position.position()))
-                    score += 0.6;
+                if (mc.world.getBlockState(position.position()).getBlock() == Blocks.ENDER_CHEST) score += 0.95;
+                else if (WorldUtils.isCrystalPlaceable(position.position().add(0, 1, 0))) score += 0.35;
+                if (hasCityPosition(position.position())) score += 0.6;
             } else {
                 if (mc.world.getBlockState(position.position()).getBlock() == Blocks.ENDER_CHEST) {
                     score -= 2.0;
                 } else {
-                    if (WorldUtils.isCrystalPlaceable(position.position().add(0, 1, 0)))
-                        score += 0.75;
-                    else
-                        score -= 2.0;
+                    if (WorldUtils.isCrystalPlaceable(position.position().add(0, 1, 0))) score += 0.75;
+                    else score -= 2.0;
                 }
             }
 
@@ -447,31 +364,25 @@ public class SpeedMineModule extends Module {
 
         for (BlockPos position : HoleUtils.getFeetPositions(player, true, false, true)) {
             positions.add(new Position(position, true));
-            if (!doubleMine.getValue())
-                positions.add(new Position(position.add(0, 1, 0), false));
+            if (!doubleMine.getValue()) positions.add(new Position(position.add(0, 1, 0), false));
         }
 
-        if (!doubleMine.getValue())
-            positions.add(new Position(player.getBlockPos().add(0, 2, 0), false));
+        if (!doubleMine.getValue()) positions.add(new Position(player.getBlockPos().add(0, 2, 0), false));
         return positions;
     }
 
     private boolean isValidPosition(BlockPos position) {
-        if (mc.world.getBlockState(position).isReplaceable())
-            return false;
-        if (mc.world.getBlockState(position).getBlock().getHardness() == -1)
-            return false;
+        if (mc.world.getBlockState(position).isReplaceable()) return false;
+        if (mc.world.getBlockState(position).getBlock().getHardness() == -1) return false;
         return !isOutOfRange(position);
     }
 
     private boolean hasCityPosition(BlockPos position) {
-        Vec3i[] offsets = new Vec3i[] { new Vec3i(1, 0, 0), new Vec3i(-1, 0, 0), new Vec3i(0, 0, 1),
-                new Vec3i(0, 0, -1) };
+        Vec3i[] offsets = new Vec3i[]{new Vec3i(1, 0, 0), new Vec3i(-1, 0, 0), new Vec3i(0, 0, 1), new Vec3i(0, 0, -1)};
 
         for (Vec3i vec3i : offsets) {
             BlockPos offsetPosition = position.add(vec3i);
-            if (WorldUtils.isPlaceable(offsetPosition))
-                return true;
+            if (WorldUtils.isPlaceable(offsetPosition)) return true;
         }
 
         return false;
@@ -482,10 +393,10 @@ public class SpeedMineModule extends Module {
     // When the proxy is forwarding for a client, SpeedMine's packets
     // are sent DIRECTLY to the server connection, completely bypassing
     // mc.getNetworkHandler().sendPacket(). This means:
-    // - The proxy's local mc.player state is never touched
-    // - mc.player.getInventory().selectedSlot stays in sync with the client
-    // - The client never sees slot switches, arm swings, or rotations
-    // - The server sees the atomic switch→mine→switchback burst
+    //   - The proxy's local mc.player state is never touched
+    //   - mc.player.getInventory().selectedSlot stays in sync with the client
+    //   - The client never sees slot switches, arm swings, or rotations
+    //   - The server sees the atomic switch→mine→switchback burst
     // ═══════════════════════════════════════════════════════════════════
 
     /**
@@ -494,7 +405,7 @@ public class SpeedMineModule extends Module {
      * to avoid touching the proxy's local player state.
      */
     private boolean isProxyActive() {
-        return isRunningOnProxy() && Pingbypass.PROXY_SERVER != null;
+        return isRunningOnProxy() && EUClient.PROXY_SERVER != null;
     }
 
     /**
@@ -509,9 +420,8 @@ public class SpeedMineModule extends Module {
                                 primary != null ? primary.getProgress() / primary.getSpeed() : 0,
                                 secondary != null ? secondary.getPosition() : null,
                                 secondary != null ? secondary.getProgress() / secondary.getSpeed() : 0)));
-        for (net.minecraft.network.ClientConnection conn : Pingbypass.PROXY_SERVER.getConnections()) {
-            if (conn.isOpen())
-                conn.send(packet);
+        for (net.minecraft.network.ClientConnection conn : EUClient.PROXY_SERVER.getConnections()) {
+            if (conn.isOpen()) conn.send(packet);
         }
     }
 
@@ -519,13 +429,30 @@ public class SpeedMineModule extends Module {
      * Renders mining progress on the client using proxy-synced state.
      */
     private void renderProxyState(MatrixStack matrices) {
-        if (proxyPrimaryPos != null)
-            renderProxyBlock(matrices, proxyPrimaryPos, proxyPrimaryProgress);
-        if (proxySecondaryPos != null && doubleMine.getValue())
-            renderProxyBlock(matrices, proxySecondaryPos, proxySecondaryProgress);
+        if (proxyPrimaryPos != null) renderProxyBlock(matrices, proxyPrimaryPos, proxyPrimaryProgress);
+        if (proxySecondaryPos != null && doubleMine.getValue()) renderProxyBlock(matrices, proxySecondaryPos, proxySecondaryProgress);
     }
 
     private void renderProxyBlock(MatrixStack matrices, BlockPos pos, float progress) {
+        if (mc.world.getBlockState(pos).isReplaceable()) return;
+
+        Box box = new Box(pos);
+        if (animation.getValue().equalsIgnoreCase("Expand")) box = new Box(pos).contract(0.5).expand(MathHelper.clamp(progress / 2.0, 0.0, 0.5));
+        if (animation.getValue().equalsIgnoreCase("Rise")) box = new Box(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1.0, pos.getY() + progress, pos.getZ() + 1.0);
+
+        Color fill = fillColor.getColor();
+        Color outline = outlineColor.getColor();
+
+        if (color.getValue().equalsIgnoreCase("Static")) {
+            fill = progress >= 0.9 ? new Color(0, 255, 0, fillColor.getAlpha()) : new Color(255, 0, 0, fillColor.getAlpha());
+            outline = progress >= 0.9 ? new Color(0, 255, 0, outlineColor.getAlpha()) : new Color(255, 0, 0, outlineColor.getAlpha());
+        } else if (color.getValue().equalsIgnoreCase("Smooth")) {
+            fill = new Color(255 - (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), 0, fillColor.getAlpha());
+            outline = new Color(255 - (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), 0, outlineColor.getAlpha());
+        }
+
+        if (render.getValue().equalsIgnoreCase("Fill") || render.getValue().equalsIgnoreCase("Both")) Renderer3D.renderBox(matrices, box, fill);
+        if (render.getValue().equalsIgnoreCase("Outline") || render.getValue().equalsIgnoreCase("Both")) Renderer3D.renderBoxOutline(matrices, box, outline);
     }
 
     /**
@@ -535,7 +462,7 @@ public class SpeedMineModule extends Module {
      */
     private void serverSend(net.minecraft.network.packet.Packet<?> packet) {
         if (isProxyActive()) {
-            var serverConn = Pingbypass.PROXY_SERVER.getServerConnection();
+            var serverConn = EUClient.PROXY_SERVER.getServerConnection();
             if (serverConn != null && serverConn.isOpen()) {
                 eu.client.pingbypass.server.ProxyServerTickListener.allowSend(() -> serverConn.send(packet));
                 return;
@@ -547,8 +474,7 @@ public class SpeedMineModule extends Module {
     /**
      * Sends a sequenced packet directly to the server connection when on the proxy.
      */
-    private void serverSendSequenced(
-            java.util.function.IntFunction<net.minecraft.network.packet.Packet<?>> packetFactory) {
+    private void serverSendSequenced(java.util.function.IntFunction<net.minecraft.network.packet.Packet<?>> packetFactory) {
         if (isProxyActive()) {
             try (var pending = ((eu.client.mixins.accessors.ClientWorldAccessor) mc.world)
                     .invokeGetPendingUpdateManager().incrementSequence()) {
@@ -557,8 +483,7 @@ public class SpeedMineModule extends Module {
         } else {
             NetworkUtils.sendSequencedPacket(seq -> {
                 @SuppressWarnings("unchecked")
-                var p = (net.minecraft.network.packet.Packet<net.minecraft.network.listener.ServerPlayPacketListener>) packetFactory
-                        .apply(seq);
+                var p = (net.minecraft.network.packet.Packet<net.minecraft.network.listener.ServerPlayPacketListener>) packetFactory.apply(seq);
                 return p;
             });
         }
@@ -570,8 +495,7 @@ public class SpeedMineModule extends Module {
         private BlockState state;
         private final int priority;
 
-        @Setter
-        private float progress;
+        @Setter private float progress;
         private float prevProgress;
         private int attempts;
         private boolean mining;
@@ -608,8 +532,7 @@ public class SpeedMineModule extends Module {
             }
 
             boolean secondary = getSecondary() != null && position.equals(getSecondary().getPosition());
-            if (secondary)
-                instantMine = false;
+            if (secondary) instantMine = false;
 
             // Block is broken (air) — clean up and switch back to client's slot
             if (mc.world.getBlockState(position).isReplaceable()) {
@@ -632,16 +555,10 @@ public class SpeedMineModule extends Module {
             }
 
             if (mining) {
-                int slot = switchMode.getValue().equalsIgnoreCase("None") ? -1
-                        : InventoryUtils.findFastestItem(this.state, InventoryUtils.HOTBAR_START,
-                                switchMode.getValue().equalsIgnoreCase("AltSwap")
-                                        || switchMode.getValue().equalsIgnoreCase("AltPickup")
-                                                ? InventoryUtils.INVENTORY_END
-                                                : InventoryUtils.HOTBAR_END);
-                if (slot == -1)
-                    slot = mc.player.getInventory().selectedSlot;
+                int slot = switchMode.getValue().equalsIgnoreCase("None") ? -1 : InventoryUtils.findFastestItem(this.state, InventoryUtils.HOTBAR_START, switchMode.getValue().equalsIgnoreCase("AltSwap") || switchMode.getValue().equalsIgnoreCase("AltPickup") ? InventoryUtils.INVENTORY_END : InventoryUtils.HOTBAR_END);
+                if (slot == -1) slot = mc.player.getInventory().selectedSlot;
 
-                float delta = WorldUtils.getMineSpeed(this.state, slot) / Pingbypass.WORLD_MANAGER.getTimerMultiplier();
+                float delta = WorldUtils.getMineSpeed(this.state, slot) / EUClient.WORLD_MANAGER.getTimerMultiplier();
 
                 prevProgress = progress;
                 progress = MathHelper.clamp(progress + delta, 0.0f, getSpeed());
@@ -653,17 +570,13 @@ public class SpeedMineModule extends Module {
                                 mc.player.getX(), mc.player.getY(), mc.player.getZ(),
                                 rots[0], rots[1], mc.player.isOnGround(), mc.player.horizontalCollision));
                     } else {
-                        Pingbypass.ROTATION_MANAGER.rotate(
-                                RotationUtils.getRotations(WorldUtils.getHitVector(position, direction)),
-                                Pingbypass.ROTATION_MANAGER
-                                        .getModulePriority(Pingbypass.MODULE_MANAGER.getModule(SpeedMineModule.class)));
+                        EUClient.ROTATION_MANAGER.rotate(RotationUtils.getRotations(WorldUtils.getHitVector(position, direction)), EUClient.ROTATION_MANAGER.getModulePriority(EUClient.MODULE_MANAGER.getModule(SpeedMineModule.class)));
                     }
                 }
 
-                if (progress >= getSpeed() && !state.isReplaceable()
-                        && (whileEating.getValue() || !mc.player.isUsingItem())) {
+                if (progress >= getSpeed() && !state.isReplaceable() && (whileEating.getValue() || !mc.player.isUsingItem())) {
                     if (!instantMine || instantTimer.hasTimeElapsed(instantDelay.getValue().longValue() * 50L)) {
-                        Pingbypass.EVENT_HANDLER.post(new DestroyBlockEvent(position));
+                        EUClient.EVENT_HANDLER.post(new DestroyBlockEvent(position));
 
                         if (rotate.getValue().equalsIgnoreCase("Packet")) {
                             if (isProxyActive()) {
@@ -672,8 +585,7 @@ public class SpeedMineModule extends Module {
                                         mc.player.getX(), mc.player.getY(), mc.player.getZ(),
                                         rots[0], rots[1], mc.player.isOnGround(), mc.player.horizontalCollision));
                             } else {
-                                Pingbypass.ROTATION_MANAGER.packetRotate(
-                                        RotationUtils.getRotations(WorldUtils.getHitVector(position, direction)));
+                                EUClient.ROTATION_MANAGER.packetRotate(RotationUtils.getRotations(WorldUtils.getHitVector(position, direction)));
                             }
                         }
 
@@ -683,32 +595,22 @@ public class SpeedMineModule extends Module {
                             int mineSlot = switchMode.getValue().equalsIgnoreCase("None") ? -1 : slot;
                             boolean needSwitch = mineSlot != -1 && mineSlot != previousSlot;
 
-                            if (needSwitch)
-                                serverSend(new UpdateSelectedSlotC2SPacket(mineSlot));
+                            if (needSwitch) serverSend(new UpdateSelectedSlotC2SPacket(mineSlot));
 
-                            serverSendSequenced(seq -> new PlayerActionC2SPacket(
-                                    PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
-                            if (grim.getValue())
-                                serverSend(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
-                                        position.up(500), direction));
+                            serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                            if (grim.getValue()) serverSend(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position.up(500), direction));
                             serverSend(new HandSwingC2SPacket(Hand.MAIN_HAND));
 
-                            if (needSwitch)
-                                serverSend(new UpdateSelectedSlotC2SPacket(previousSlot));
+                            if (needSwitch) serverSend(new UpdateSelectedSlotC2SPacket(previousSlot));
                         } else {
                             InventoryUtils.switchSlot(switchMode.getValue(), slot, previousSlot);
 
-                            NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(
-                                    PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
-                            if (grim.getValue())
-                                mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(
-                                        PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position.up(500), direction));
+                            NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                            if (grim.getValue()) mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position.up(500), direction));
                             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
 
-                            if (strict.getValue() || (doubleMine.getValue() && secondary))
-                                switchAction = new SwitchAction(slot, previousSlot, System.currentTimeMillis());
-                            else if (switchAction == null)
-                                InventoryUtils.switchBack(switchMode.getValue(), slot, previousSlot);
+                            if (strict.getValue() || (doubleMine.getValue() && secondary)) switchAction = new SwitchAction(slot, previousSlot, System.currentTimeMillis());
+                            else if (switchAction == null) InventoryUtils.switchBack(switchMode.getValue(), slot, previousSlot);
                         }
 
                         // Remove block client-side so modules see it as air immediately
@@ -716,8 +618,7 @@ public class SpeedMineModule extends Module {
                             mc.world.removeBlock(position, false);
                         }
 
-                        if (!instantMine || secondary)
-                            mineTimer.reset();
+                        if (!instantMine || secondary) mineTimer.reset();
                     }
 
                     attempts++;
@@ -746,6 +647,33 @@ public class SpeedMineModule extends Module {
         }
 
         public void render(MatrixStack matrices) {
+            if (mc.world.getBlockState(position).isReplaceable() && (!instantMine || instantRender.getValue().equalsIgnoreCase("None")))
+                return;
+
+            Box box = new Box(position);
+            double progress = MathHelper.lerp(mc.getRenderTickCounter().getTickDelta(false), prevProgress / getSpeed(), this.progress / getSpeed());
+
+            if (animation.getValue().equalsIgnoreCase("Expand")) box = new Box(position).contract(0.5).expand(MathHelper.clamp(progress / 2.0, 0.0, 0.5));
+            if (animation.getValue().equalsIgnoreCase("Rise")) box = new Box(position.getX(), position.getY(), position.getZ(), position.getX() + 1.0, position.getY() + progress, position.getZ() + 1.0);
+
+            Color fill = fillColor.getColor();
+            Color outline = outlineColor.getColor();
+
+            if (color.getValue().equalsIgnoreCase("Static")) {
+                fill = progress >= 0.9 ? new Color(0, 255, 0, fillColor.getAlpha()) : new Color(255, 0, 0, fillColor.getAlpha());
+                outline = progress >= 0.9 ? new Color(0, 255, 0, outlineColor.getAlpha()) : new Color(255, 0, 0, outlineColor.getAlpha());
+            } else if (color.getValue().equalsIgnoreCase("Smooth")) {
+                fill = new Color(255 - (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), 0, fillColor.getAlpha());
+                outline = new Color(255 - (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), (int) (MathHelper.clamp(progress, 0.0f, 1.0f) * 255), 0, outlineColor.getAlpha());
+            }
+
+            if (progress >= getSpeed() && instantMine && instantRender.getValue().equalsIgnoreCase("Custom")) {
+                fill = ColorUtils.getColor(instantColor.getColor(), fillColor.getAlpha());
+                outline = ColorUtils.getColor(instantColor.getColor(), outlineColor.getAlpha());
+            }
+
+            if (render.getValue().equalsIgnoreCase("Fill") || render.getValue().equalsIgnoreCase("Both")) Renderer3D.renderBox(matrices, box, fill);
+            if (render.getValue().equalsIgnoreCase("Outline") || render.getValue().equalsIgnoreCase("Both")) Renderer3D.renderBoxOutline(matrices, box, outline);
         }
 
         public void start() {
@@ -754,27 +682,17 @@ public class SpeedMineModule extends Module {
             if (isProxyActive()) {
                 // Proxy: atomic switch→mine→switchback. Packets go directly
                 // to the server connection so the proxy's local state is untouched.
-                int slot = switchMode.getValue().equalsIgnoreCase("None") ? -1
-                        : InventoryUtils.findFastestItem(state, InventoryUtils.HOTBAR_START,
-                                switchMode.getValue().equalsIgnoreCase("AltSwap")
-                                        || switchMode.getValue().equalsIgnoreCase("AltPickup")
-                                                ? InventoryUtils.INVENTORY_END
-                                                : InventoryUtils.HOTBAR_END);
+                int slot = switchMode.getValue().equalsIgnoreCase("None") ? -1 : InventoryUtils.findFastestItem(state, InventoryUtils.HOTBAR_START, switchMode.getValue().equalsIgnoreCase("AltSwap") || switchMode.getValue().equalsIgnoreCase("AltPickup") ? InventoryUtils.INVENTORY_END : InventoryUtils.HOTBAR_END);
                 boolean needSwitch = slot != -1 && slot != mc.player.getInventory().selectedSlot;
 
-                if (needSwitch)
-                    serverSend(new UpdateSelectedSlotC2SPacket(slot));
+                if (needSwitch) serverSend(new UpdateSelectedSlotC2SPacket(slot));
 
                 if (doubleMine.getValue()) {
-                    serverSendSequenced(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
-                    serverSendSequenced(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
-                    serverSendSequenced(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                    serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                    serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
+                    serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
                 } else {
-                    serverSendSequenced(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
+                    serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
                 }
 
                 serverSend(new HandSwingC2SPacket(Hand.MAIN_HAND));
@@ -784,15 +702,11 @@ public class SpeedMineModule extends Module {
             } else {
                 // Local: no slot switch in start(), only at STOP_DESTROY moment
                 if (doubleMine.getValue()) {
-                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
-                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
-                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
+                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
+                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, position, direction, seq));
                 } else {
-                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(
-                            PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
+                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, position, direction, seq));
                 }
                 mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
             }
@@ -807,16 +721,12 @@ public class SpeedMineModule extends Module {
         public void cancel() {
             if (!doubleMine.getValue()) {
                 if (isProxyActive()) {
-                    serverSendSequenced(
-                            seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position,
-                                    WorldUtils.getClosestDirection(position, true), seq));
+                    serverSendSequenced(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position, WorldUtils.getClosestDirection(position, true), seq));
                     serverSend(new HandSwingC2SPacket(Hand.MAIN_HAND));
                     // Switch server back to client's actual slot
                     serverSend(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
                 } else {
-                    NetworkUtils.sendSequencedPacket(
-                            seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position,
-                                    WorldUtils.getClosestDirection(position, true), seq));
+                    NetworkUtils.sendSequencedPacket(seq -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, position, WorldUtils.getClosestDirection(position, true), seq));
                     mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                 }
             }
@@ -830,17 +740,12 @@ public class SpeedMineModule extends Module {
         }
 
         private float getSpeed() {
-            return getSecondary() != null && position.equals(getSecondary().getPosition()) ? 1.0f
-                    : speed.getValue().floatValue();
+            return getSecondary() != null && position.equals(getSecondary().getPosition()) ? 1.0f : speed.getValue().floatValue();
         }
     }
 
-    private record SwitchAction(int slot, int previousSlot, long time) {
-    }
+    private record SwitchAction(int slot, int previousSlot, long time) { }
 
-    private record Target(PlayerEntity player, java.util.List<Position> feetPositions, BlockPos position) {
-    }
-
-    private record Position(BlockPos position, boolean feetPosition) {
-    }
+    private record Target(PlayerEntity player, java.util.List<Position> feetPositions, BlockPos position) { }
+    private record Position(BlockPos position, boolean feetPosition) { }
 }

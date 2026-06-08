@@ -2,7 +2,7 @@ package eu.client.commands;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.commands.impl.ModuleCommand;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.ChatInputEvent;
@@ -18,7 +18,7 @@ public class CommandManager {
     private String prefix = ".";
 
     public CommandManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
 
         try {
             for (Class<?> clazz : new Reflections("eu.client.commands.impl").getSubTypesOf(Command.class)) {
@@ -28,10 +28,10 @@ public class CommandManager {
                 commands.add((Command) clazz.getDeclaredConstructor().newInstance());
             }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-            Pingbypass.LOGGER.error("Failed to register the client's modules!", exception);
+            EUClient.LOGGER.error("Failed to register the client's modules!", exception);
         }
 
-        Pingbypass.MODULE_MANAGER.getModules().forEach(m -> commands.add(new ModuleCommand(m)));
+        EUClient.MODULE_MANAGER.getModules().forEach(m -> commands.add(new ModuleCommand(m)));
     }
 
     @SubscribeEvent
@@ -55,7 +55,7 @@ public class CommandManager {
             }
         }
 
-        if (!foundCommand) Pingbypass.CHAT_MANAGER.warn("Could not find the command specified.");
+        if (!foundCommand) EUClient.CHAT_MANAGER.warn("Could not find the command specified.");
     }
 
     public Command getCommand(String name) {

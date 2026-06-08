@@ -7,8 +7,13 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
+/**
+ * Custom payload for the euclient:pingbypass plugin channel.
+ * Carries raw bytes that encode our custom packet protocol:
+ * [packetId: VarInt][payload: bytes]
+ */
 public record PbCustomPayload(byte[] data) implements CustomPayload {
-    public static final Identifier CHANNEL = Identifier.of("pingbypass", "pingbypass");
+    public static final Identifier CHANNEL = Identifier.of("euclient", "pingbypass");
     public static final Id<PbCustomPayload> ID = new Id<>(CHANNEL);
 
     public static final int C2S_JOIN = 0;
@@ -49,7 +54,11 @@ public record PbCustomPayload(byte[] data) implements CustomPayload {
         return new PbCustomPayload(bytes);
     }
 
-
+    /**
+     * Creates a C2S packet for sending to the proxy. PbCustomPayload is NOT registered
+     * with Fabric's PayloadTypeRegistry for C2S, so this bypasses Fabric's networking
+     * layer which would otherwise intercept and break the send.
+     */
     public static CustomPayloadC2SPacket createC2SPacket(PbPacket packet) {
         return new CustomPayloadC2SPacket(fromPacket(packet));
     }

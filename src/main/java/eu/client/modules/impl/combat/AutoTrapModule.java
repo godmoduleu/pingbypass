@@ -1,6 +1,6 @@
 package eu.client.modules.impl.combat;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.PlayerUpdateEvent;
 import eu.client.modules.Module;
@@ -66,7 +66,7 @@ public class AutoTrapModule extends Module {
 
             if (autoSwitch.getValue().equalsIgnoreCase("None") && !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("You are currently not holding any blocks.", getName());
+                    EUClient.CHAT_MANAGER.tagged("You are currently not holding any blocks.", getName());
                     setToggled(false);
                 }
 
@@ -79,7 +79,7 @@ public class AutoTrapModule extends Module {
 
             if (slot == -1) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("No blocks could be found in your hotbar.", getName());
+                    EUClient.CHAT_MANAGER.tagged("No blocks could be found in your hotbar.", getName());
                     setToggled(false);
                 }
 
@@ -157,7 +157,7 @@ public class AutoTrapModule extends Module {
             if (player == mc.player) continue;
             if (!player.isAlive() || player.getHealth() <= 0.0f) continue;
             if (mc.player.squaredDistanceTo(player) > MathHelper.square(enemyRange.getValue().doubleValue())) continue;
-            if (Pingbypass.FRIEND_MANAGER.contains(player.getName().getString())) continue;
+            if (EUClient.FRIEND_MANAGER.contains(player.getName().getString())) continue;
             if (holeCheck.getValue() && !HoleUtils.isPlayerInHole(player)) continue;
 
             List<BlockPos> positions = HoleUtils.getTrapPositions(player, mode.getValue().equalsIgnoreCase("Partial"), head.getValue(), antiStep.getValue(), false, strictDirection.getValue()).stream()

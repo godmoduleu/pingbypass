@@ -1,6 +1,6 @@
 package eu.client.commands.impl;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.commands.Command;
 import eu.client.commands.RegisterCommand;
 import eu.client.utils.chat.ChatUtils;
@@ -12,19 +12,19 @@ public class HelpCommand extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length == 1)  {
-            Command command = Pingbypass.COMMAND_MANAGER.getCommand(args[0]);
+            Command command = EUClient.COMMAND_MANAGER.getCommand(args[0]);
             if (command == null) {
-                Pingbypass.CHAT_MANAGER.tagged("Could not find the command specified.", getTag(), getName());
+                EUClient.CHAT_MANAGER.tagged("Could not find the command specified.", getTag(), getName());
                 return;
             }
 
-            Pingbypass.CHAT_MANAGER.info(command.getTag() + ChatUtils.getPrimary() + " - " + ChatUtils.getSecondary() + command.getName() + " " + command.getSyntax());
-            Pingbypass.CHAT_MANAGER.info(command.getDescription());
+            EUClient.CHAT_MANAGER.info(command.getTag() + ChatUtils.getPrimary() + " - " + ChatUtils.getSecondary() + command.getName() + " " + command.getSyntax());
+            EUClient.CHAT_MANAGER.info(command.getDescription());
         } else if (args.length == 0) {
-            List<Command> commands = Pingbypass.COMMAND_MANAGER.getCommands();
+            List<Command> commands = EUClient.COMMAND_MANAGER.getCommands();
 
             if (commands.isEmpty()) {
-                Pingbypass.CHAT_MANAGER.tagged("There are currently no registered commands.", getTag(), getName() + "-list");
+                EUClient.CHAT_MANAGER.tagged("There are currently no registered commands.", getTag(), getName() + "-list");
             } else {
                 StringBuilder builder = new StringBuilder();
                 int index = 0;
@@ -35,7 +35,7 @@ public class HelpCommand extends Command {
                             .append(index == commands.size() ? "" : ", ");
                 }
 
-                Pingbypass.CHAT_MANAGER.message("Commands " + ChatUtils.getPrimary() + "[" + ChatUtils.getSecondary() + commands.size() + ChatUtils.getPrimary() + "]: " + ChatUtils.getSecondary() + builder, getName() + "-list");
+                EUClient.CHAT_MANAGER.message("Commands " + ChatUtils.getPrimary() + "[" + ChatUtils.getSecondary() + commands.size() + ChatUtils.getPrimary() + "]: " + ChatUtils.getSecondary() + builder, getName() + "-list");
             }
         } else {
             messageSyntax();

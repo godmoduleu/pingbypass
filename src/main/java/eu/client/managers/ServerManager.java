@@ -3,9 +3,10 @@ package eu.client.managers;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.*;
+import eu.client.modules.impl.miscellaneous.FastLatencyModule;
 import eu.client.utils.IMinecraft;
 import eu.client.utils.system.Timer;
 import net.minecraft.client.network.PlayerListEntry;
@@ -32,7 +33,7 @@ public class ServerManager implements IMinecraft {
     private Pair<ServerAddress, ServerInfo> lastConnection;
 
     public ServerManager() {
-        Pingbypass.EVENT_HANDLER.subscribe(this);
+        EUClient.EVENT_HANDLER.subscribe(this);
     }
 
     @SubscribeEvent
@@ -44,8 +45,7 @@ public class ServerManager implements IMinecraft {
         }
 
         if (event.getPacket() instanceof WorldTimeUpdateS2CPacket) {
-            tickRates[nextIndex] = Math.clamp(20.0f / ((System.currentTimeMillis() - lastUpdate) / 1000.0F), 0.0f,
-                    20.0f);
+            tickRates[nextIndex] = Math.clamp(20.0f / ((System.currentTimeMillis() - lastUpdate) / 1000.0F), 0.0f, 20.0f);
             nextIndex = (nextIndex + 1) % tickRates.length;
             lastUpdate = System.currentTimeMillis();
         }
@@ -61,18 +61,17 @@ public class ServerManager implements IMinecraft {
 
     @SubscribeEvent
     public void handleConnections(PacketReceiveEvent event) {
-        if (mc.world == null)
-            return;
+        if (mc.world == null) return;
 
         if (event.getPacket() instanceof PlayerListS2CPacket packet) {
             if (packet.getActions().contains(PlayerListS2CPacket.Action.ADD_PLAYER)) {
-                for (PlayerListS2CPacket.Entry entry : packet.getPlayerAdditionEntries()) {
-                    Pingbypass.EVENT_HANDLER.post(new PlayerConnectEvent(entry.profile().getId()));
+                for(PlayerListS2CPacket.Entry entry : packet.getPlayerAdditionEntries()) {
+                    EUClient.EVENT_HANDLER.post(new PlayerConnectEvent(entry.profile().getId()));
                 }
             }
-        } else if (event.getPacket() instanceof PlayerRemoveS2CPacket packet) {
-            for (UUID id : packet.profileIds()) {
-                Pingbypass.EVENT_HANDLER.post(new PlayerDisconnectEvent(id));
+        } else if(event.getPacket() instanceof PlayerRemoveS2CPacket packet) {
+            for(UUID id : packet.profileIds()) {
+                EUClient.EVENT_HANDLER.post(new PlayerDisconnectEvent(id));
             }
         }
     }
@@ -83,10 +82,8 @@ public class ServerManager implements IMinecraft {
     }
 
     public float getTickRate() {
-        if (mc.player == null)
-            return 0;
-        if (System.currentTimeMillis() - timeJoined < 4000)
-            return 20;
+        if (mc.player == null) return 0;
+        if (System.currentTimeMillis() - timeJoined < 4000) return 20;
 
         int ticks = 0;
         float tickRates = 0.0f;
@@ -106,13 +103,14 @@ public class ServerManager implements IMinecraft {
     }
 
     public int getPing() {
+        if (EUClient.MODULE_MANAGER.getModule(FastLatencyModule.class).isToggled()) {
+            return EUClient.MODULE_MANAGER.getModule(FastLatencyModule.class).getLatency();
+        }
 
-        if (mc.getNetworkHandler() == null || mc.player == null)
-            return 0;
+        if (mc.getNetworkHandler() == null || mc.player == null) return 0;
 
         PlayerListEntry entry = mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid());
-        if (entry != null)
-            return entry.getLatency();
+        if (entry != null) return entry.getLatency();
 
         // Fallback: when connected via PingBypass proxy, the player list entry
         // might be under the proxy's UUID. Find our own entry by name or use
@@ -125,8 +123,7 @@ public class ServerManager implements IMinecraft {
             }
             // Last resort: return the first entry's latency
             for (PlayerListEntry e : mc.getNetworkHandler().getPlayerList()) {
-                if (e.getLatency() > 0)
-                    return e.getLatency();
+                if (e.getLatency() > 0) return e.getLatency();
             }
         }
 
@@ -134,14 +131,11 @@ public class ServerManager implements IMinecraft {
     }
 
     public String getServerBrand() {
-        if (mc.getCurrentServerEntry() == null || mc.getNetworkHandler() == null
-                || mc.getNetworkHandler().getBrand() == null)
-            return "Vanilla";
+        if (mc.getCurrentServerEntry() == null || mc.getNetworkHandler() == null || mc.getNetworkHandler().getBrand() == null) return "Vanilla";
         return mc.getNetworkHandler().getBrand();
     }
 
     public String getServer() {
-        return mc.isInSingleplayer() ? "Singleplayer"
-                : ServerAddress.parse(mc.getCurrentServerEntry().address).getAddress();
+        return mc.isInSingleplayer() ? "Singleplayer" : ServerAddress.parse(mc.getCurrentServerEntry().address).getAddress();
     }
 }

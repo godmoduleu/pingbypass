@@ -1,6 +1,6 @@
 package eu.client.commands.impl;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.commands.Command;
 import eu.client.commands.RegisterCommand;
 import eu.client.utils.chat.ChatUtils;
@@ -12,7 +12,7 @@ public class GrabCommand extends Command {
     public void execute(String[] args) {
         if (args.length == 1) {
             switch (args[0]) {
-                case "ip" -> copy(Pingbypass.SERVER_MANAGER.getServer());
+                case "ip" -> copy(EUClient.SERVER_MANAGER.getServer());
                 case "coords" -> copy("[" + (int) mc.player.getX() + ", " + (int) mc.player.getY() + ", " + (int) mc.player.getZ() + "]");
                 case "name" -> copy(mc.player.getName().getString());
                 default -> messageSyntax();
@@ -24,6 +24,6 @@ public class GrabCommand extends Command {
 
     private void copy(String text) {
     mc.keyboard.setClipboard(text);
-        Pingbypass.CHAT_MANAGER.tagged("Successfully copied " + ChatUtils.getPrimary() + text + ChatUtils.getSecondary() + " to your clipboard.", getTag(), getName());
+        EUClient.CHAT_MANAGER.tagged("Successfully copied " + ChatUtils.getPrimary() + text + ChatUtils.getSecondary() + " to your clipboard.", getTag(), getName());
     }
 }

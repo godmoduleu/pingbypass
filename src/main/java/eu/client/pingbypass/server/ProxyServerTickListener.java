@@ -6,7 +6,11 @@ import eu.client.events.impl.TickEvent;
 import eu.client.pingbypass.PingBypassFlags;
 import net.minecraft.network.packet.c2s.play.ClientTickEndC2SPacket;
 
-
+/**
+ * Subscribes to the EUClient TickEvent and forwards ticks to the ProxyServer.
+ * This ensures queued packets on proxy connections are processed each client tick.
+ * Also suppresses duplicate packets that the proxy's own tick loop would send.
+ */
 public class ProxyServerTickListener {
     private final ProxyServer proxyServer;
 
@@ -21,8 +25,10 @@ public class ProxyServerTickListener {
         }
     }
 
+    // ThreadLocal flag: when true, packets are allowed through (module-authorized)
     private static final ThreadLocal<Boolean> ALLOW_SEND = ThreadLocal.withInitial(() -> false);
 
+    /** Call this to temporarily allow packets through the filter (for module use) */
     public static void allowSend(Runnable action) {
         ALLOW_SEND.set(true);
         try {
@@ -37,6 +43,9 @@ public class ProxyServerTickListener {
         if (!PingBypassFlags.proxyForwardingActive) return;
         if (ALLOW_SEND.get()) return; // Module-authorized, let through
 
+        // Block specific known-duplicate packet types that the proxy's own
+        // tick loop sends automatically. The client's versions are forwarded
+        // by PbPlayHandler.
         var packet = event.getPacket();
         if (packet instanceof ClientTickEndC2SPacket
                 || packet instanceof net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket

@@ -1,7 +1,7 @@
 package eu.client.modules;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.impl.ToggleModuleEvent;
 import eu.client.settings.Setting;
 import eu.client.settings.impl.*;
@@ -54,7 +54,7 @@ public abstract class Module implements IMinecraft {
 
         if (persistent) toggled = true;
         if (toggled) {
-            Pingbypass.EVENT_HANDLER.subscribe(this);
+            EUClient.EVENT_HANDLER.subscribe(this);
         }
     }
 
@@ -70,7 +70,7 @@ public abstract class Module implements IMinecraft {
         if (!proxyEnhanced || proxyMode == null) return false;
         if (!eu.client.pingbypass.PingBypassFlags.proxyForwardingActive) return false;
         // Only skip on the CLIENT side, not on the proxy server
-        if (Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()) return false;
+        if (EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()) return false;
 
         return switch (proxyMode.getValue()) {
             case "Auto", "Proxy" -> true;
@@ -97,7 +97,7 @@ public abstract class Module implements IMinecraft {
     public boolean isRunningOnProxy() {
         if (!proxyEnhanced) return false;
         if (!eu.client.pingbypass.PingBypassFlags.proxyForwardingActive) return false;
-        if (Pingbypass.PINGBYPASS_CONFIG == null || !Pingbypass.PINGBYPASS_CONFIG.isServer()) return false;
+        if (EUClient.PINGBYPASS_CONFIG == null || !EUClient.PINGBYPASS_CONFIG.isServer()) return false;
         // Respect ProxyMode — if set to "Local", the proxy should not run this module
         if (proxyMode != null && proxyMode.getValue().equals("Local")) return false;
         return true;
@@ -115,7 +115,7 @@ public abstract class Module implements IMinecraft {
      */
     public String getProxyIndicator() {
         if (shouldRunOnProxy()
-                && Pingbypass.PINGBYPASS_CONFIG != null && Pingbypass.PINGBYPASS_CONFIG.isServer()) {
+                && EUClient.PINGBYPASS_CONFIG != null && EUClient.PINGBYPASS_CONFIG.isServer()) {
             return " §d[PB]";
         }
         return "";
@@ -137,25 +137,25 @@ public abstract class Module implements IMinecraft {
         if (toggled == this.toggled) return;
 
         this.toggled = toggled;
-        Pingbypass.EVENT_HANDLER.post(new ToggleModuleEvent(this, this.toggled));
+        EUClient.EVENT_HANDLER.post(new ToggleModuleEvent(this, this.toggled));
 
         // If this is a proxy-enhanced module and we're connected as a client,
         // send the toggle to the proxy server
-        if (shouldRunOnProxy() && notify && Pingbypass.PINGBYPASS_CONFIG != null
-                && !Pingbypass.PINGBYPASS_CONFIG.isServer()) {
+        if (shouldRunOnProxy() && notify && EUClient.PINGBYPASS_CONFIG != null
+                && !EUClient.PINGBYPASS_CONFIG.isServer()) {
             sendProxyToggle(this.toggled);
         }
 
         // If this is a proxy-enhanced module on the SERVER side (proxy),
         // sync the toggle state back to the connected client
-        if (proxyEnhanced && Pingbypass.PINGBYPASS_CONFIG != null
-                && Pingbypass.PINGBYPASS_CONFIG.isServer()
+        if (proxyEnhanced && EUClient.PINGBYPASS_CONFIG != null
+                && EUClient.PINGBYPASS_CONFIG.isServer()
                 && eu.client.pingbypass.PingBypassFlags.proxyForwardingActive
-                && Pingbypass.PROXY_SERVER != null) {
+                && EUClient.PROXY_SERVER != null) {
             var packet = new net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket(
                     eu.client.pingbypass.protocol.PbCustomPayload.fromPacket(
                             new eu.client.pingbypass.protocol.packets.S2CModuleStatePacket(name, this.toggled)));
-            for (net.minecraft.network.ClientConnection conn : Pingbypass.PROXY_SERVER.getConnections()) {
+            for (net.minecraft.network.ClientConnection conn : EUClient.PROXY_SERVER.getConnections()) {
                 if (conn.isOpen()) conn.send(packet);
             }
         }
@@ -164,19 +164,19 @@ public abstract class Module implements IMinecraft {
             animationOffset.setEasing(Easing.Method.EASE_OUT_CUBIC);
 
             if (notify && chatNotify.getValue()) {
-                Pingbypass.CHAT_MANAGER.message(ChatUtils.getPrimary() + name + ChatUtils.getSecondary() + ".toggled = " + Formatting.GREEN + "true" + ChatUtils.getSecondary() + ";", "toggle-" + getName().toLowerCase());
+                EUClient.CHAT_MANAGER.message(ChatUtils.getPrimary() + name + ChatUtils.getSecondary() + ".toggled = " + Formatting.GREEN + "true" + ChatUtils.getSecondary() + ";", "toggle-" + getName().toLowerCase());
             }
 
             onEnable();
-            if (this.toggled) Pingbypass.EVENT_HANDLER.subscribe(this);
+            if (this.toggled) EUClient.EVENT_HANDLER.subscribe(this);
         } else {
             animationOffset.setEasing(Easing.Method.EASE_IN_CUBIC);
 
-            Pingbypass.EVENT_HANDLER.unsubscribe(this);
+            EUClient.EVENT_HANDLER.unsubscribe(this);
             onDisable();
 
             if (notify && chatNotify.getValue()) {
-                Pingbypass.CHAT_MANAGER.message(ChatUtils.getPrimary() + name + ChatUtils.getSecondary() + ".toggled = " + Formatting.RED + "false" + ChatUtils.getSecondary() + ";", "toggle-" + getName().toLowerCase());
+                EUClient.CHAT_MANAGER.message(ChatUtils.getPrimary() + name + ChatUtils.getSecondary() + ".toggled = " + Formatting.RED + "false" + ChatUtils.getSecondary() + ";", "toggle-" + getName().toLowerCase());
             }
         }
     }
@@ -217,7 +217,7 @@ public abstract class Module implements IMinecraft {
                         new net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket(payload));
             }
         } catch (Exception e) {
-            Pingbypass.LOGGER.warn("[PingBypass] Failed to send module toggle to proxy", e);
+            EUClient.LOGGER.warn("[PingBypass] Failed to send module toggle to proxy", e);
         }
     }
 

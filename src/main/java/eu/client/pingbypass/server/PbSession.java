@@ -14,6 +14,12 @@ import net.minecraft.network.listener.PacketListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Custom Connection subclass for the PingBypass proxy server.
+ * Overrides transitionOutbound/transitionInbound to perform direct pipeline
+ * manipulation instead of writing Lambdas through the pipeline, avoiding
+ * conflicts with Fabric API's FabricPacketSplitter.
+ */
 public class PbSession extends ClientConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(PbSession.class);
 

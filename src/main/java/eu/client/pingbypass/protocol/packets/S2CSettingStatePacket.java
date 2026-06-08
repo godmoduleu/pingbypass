@@ -3,6 +3,11 @@ package eu.client.pingbypass.protocol.packets;
 import eu.client.pingbypass.protocol.PbPacket;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Server → Client: Sync a proxy module setting's value.
+ * Packet ID: 6
+ * Payload: moduleName (String), settingName (String), value (String)
+ */
 public class S2CSettingStatePacket extends PbPacket {
     public static final int ID = 6;
 

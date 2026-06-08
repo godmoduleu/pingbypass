@@ -1,6 +1,6 @@
 package eu.client.mixins;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.impl.ServerConnectEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
@@ -16,6 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ConnectScreenMixin {
     @Inject(method = "connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Lnet/minecraft/client/network/CookieStorage;)V", at = @At("HEAD"))
     private void connect(MinecraftClient client, ServerAddress address, ServerInfo serverInfo, CookieStorage cookieStorage, CallbackInfo info) {
-        Pingbypass.EVENT_HANDLER.post(new ServerConnectEvent(address, serverInfo));
+        EUClient.EVENT_HANDLER.post(new ServerConnectEvent(address, serverInfo));
     }
 }

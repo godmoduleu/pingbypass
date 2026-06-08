@@ -1,6 +1,6 @@
 package eu.client.modules.impl.combat;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.SubscribeEvent;
 import eu.client.events.impl.PlayerUpdateEvent;
 import eu.client.modules.Module;
@@ -71,7 +71,7 @@ public class HoleFillModule extends Module {
             boolean flag = webs.getValue() ? !mc.player.getMainHandStack().getItem().equals(Items.COBWEB) : !(mc.player.getMainHandStack().getItem() instanceof BlockItem);
             if (autoSwitch.getValue().equalsIgnoreCase("None") && flag) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("You are currently not holding any " + (webs.getValue() ? "cobwebs." : "blocks."), getName());
+                    EUClient.CHAT_MANAGER.tagged("You are currently not holding any " + (webs.getValue() ? "cobwebs." : "blocks."), getName());
                     setToggled(false);
                 }
 
@@ -88,7 +88,7 @@ public class HoleFillModule extends Module {
 
             if (slot == -1) {
                 if (itemDisable.getValue()) {
-                    Pingbypass.CHAT_MANAGER.tagged("No " + (webs.getValue() ? "cobwebs" : "blocks") + " could be found in your hotbar.", getName());
+                    EUClient.CHAT_MANAGER.tagged("No " + (webs.getValue() ? "cobwebs" : "blocks") + " could be found in your hotbar.", getName());
                     setToggled(false);
                 }
 
@@ -147,7 +147,7 @@ public class HoleFillModule extends Module {
             if (player == mc.player) continue;
             if (!player.isAlive() || player.getHealth() <= 0.0f) continue;
             if (mc.player.squaredDistanceTo(player) > MathHelper.square(enemyRange.getValue().doubleValue())) continue;
-            if (Pingbypass.FRIEND_MANAGER.contains(player.getName().getString())) continue;
+            if (EUClient.FRIEND_MANAGER.contains(player.getName().getString())) continue;
             if (holeCheck.getValue() && HoleUtils.isPlayerInHole(player)) continue;
 
             List<BlockPos> positions = getPositions(player);
@@ -168,8 +168,8 @@ public class HoleFillModule extends Module {
 
     private List<BlockPos> getPositions(PlayerEntity player) {
         List<BlockPos> positions = new ArrayList<>();
-        for (int i = 0; i < Pingbypass.WORLD_MANAGER.getRadius(range.getValue().doubleValue()); i++) {
-            BlockPos position = mc.player.getBlockPos().add(Pingbypass.WORLD_MANAGER.getOffset(i));
+        for (int i = 0; i < EUClient.WORLD_MANAGER.getRadius(range.getValue().doubleValue()); i++) {
+            BlockPos position = mc.player.getBlockPos().add(EUClient.WORLD_MANAGER.getOffset(i));
             Vec3d vec3d = Vec3d.ofCenter(position);
 
             if (!mc.world.getBlockState(position).isReplaceable()) continue;

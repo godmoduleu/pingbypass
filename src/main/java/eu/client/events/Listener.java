@@ -8,7 +8,7 @@
 package eu.client.events;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -37,7 +37,7 @@ public class Listener {
 
             consumer = (Consumer<Object>) LambdaMetafactory.metafactory(MethodHandles.lookup(), "accept", invokedType, MethodType.methodType(void.class, Object.class), handle, type).getTarget().invoke(object);
         } catch (Throwable throwable) {
-            Pingbypass.LOGGER.error("The Event System threw an exception!", throwable);
+            EUClient.LOGGER.error("The Event System threw an exception!", throwable);
         }
     }
 

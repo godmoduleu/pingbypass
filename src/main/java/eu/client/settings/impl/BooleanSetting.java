@@ -1,7 +1,7 @@
 package eu.client.settings.impl;
 
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.impl.SettingChangeEvent;
 import eu.client.settings.Setting;
 
@@ -40,7 +40,7 @@ public class BooleanSetting extends Setting {
 
     public void setValue(boolean value) {
         this.value = value;
-        Pingbypass.EVENT_HANDLER.post(new SettingChangeEvent(this));
+        EUClient.EVENT_HANDLER.post(new SettingChangeEvent(this));
     }
 
 

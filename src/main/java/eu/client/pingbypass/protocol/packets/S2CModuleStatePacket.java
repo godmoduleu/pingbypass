@@ -3,6 +3,11 @@ package eu.client.pingbypass.protocol.packets;
 import eu.client.pingbypass.protocol.PbPacket;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Server → Client: Sync a proxy module's enabled state.
+ * Packet ID: 5
+ * Payload: moduleName (String), enabled (Boolean)
+ */
 public class S2CModuleStatePacket extends PbPacket {
     public static final int ID = 5;
 

@@ -1,7 +1,7 @@
 package eu.client.settings.impl;
 
 import lombok.Getter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.events.impl.SettingChangeEvent;
 import eu.client.settings.Setting;
 
@@ -51,7 +51,7 @@ public class NumberSetting extends Setting {
             case FLOAT -> this.value = Math.clamp(value.floatValue(), minimum.floatValue(), maximum.floatValue());
             default -> this.value = Math.clamp(value.intValue(), minimum.intValue(), maximum.intValue());
         }
-        Pingbypass.EVENT_HANDLER.post(new SettingChangeEvent(this));
+        EUClient.EVENT_HANDLER.post(new SettingChangeEvent(this));
     }
 
     public void resetValue() {

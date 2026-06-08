@@ -1,7 +1,7 @@
 package eu.client.pingbypass.handler;
 
 import com.mojang.authlib.GameProfile;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.pingbypass.server.ProxyServer;
 import eu.client.pingbypass.server.RegistryCache;
 import net.minecraft.network.ClientConnection;
@@ -84,7 +84,7 @@ public class PbConfigurationHandler implements ServerConfigurationPacketListener
         this.connection.transitionOutbound(
                 PlayStateFactories.S2C.bind(RegistryByteBuf.makeFactory(registryManager)));
 
-        if (Pingbypass.PINGBYPASS_CONFIG.hasPassword()) {
+        if (EUClient.PINGBYPASS_CONFIG.hasPassword()) {
             this.connection.transitionInbound(
                     PlayStateFactories.C2S.bind(RegistryByteBuf.makeFactory(DynamicRegistryManager.EMPTY)),
                     new PbPasswordHandler(this.proxyServer, this.connection, this.profile, registryManager));

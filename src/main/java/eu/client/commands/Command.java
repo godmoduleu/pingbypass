@@ -2,7 +2,7 @@ package eu.client.commands;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.utils.IMinecraft;
 
 import java.util.Arrays;
@@ -27,6 +27,6 @@ public abstract class Command implements IMinecraft {
     public abstract void execute(String[] args);
 
     public void messageSyntax() {
-        Pingbypass.CHAT_MANAGER.info(name + " " + syntax);
+        EUClient.CHAT_MANAGER.info(name + " " + syntax);
     }
 }

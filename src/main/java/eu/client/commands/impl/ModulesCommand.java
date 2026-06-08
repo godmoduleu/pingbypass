@@ -1,6 +1,6 @@
 package eu.client.commands.impl;
 
-import eu.client.Pingbypass;
+import eu.client.EUClient;
 import eu.client.commands.Command;
 import eu.client.commands.RegisterCommand;
 import eu.client.modules.Module;
@@ -14,10 +14,10 @@ public class ModulesCommand extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {
-            List<Module> modules = Pingbypass.MODULE_MANAGER.getModules();
+            List<Module> modules = EUClient.MODULE_MANAGER.getModules();
 
             if (modules.isEmpty()) {
-                Pingbypass.CHAT_MANAGER.tagged("There are currently no registered modules.", getTag(), getName());
+                EUClient.CHAT_MANAGER.tagged("There are currently no registered modules.", getTag(), getName());
             } else {
                 StringBuilder builder = new StringBuilder();
                 int index = 0;
@@ -31,7 +31,7 @@ public class ModulesCommand extends Command {
                             .append(index == modules.size() ? "" : ", ");
                 }
 
-                Pingbypass.CHAT_MANAGER.message("Modules " + ChatUtils.getPrimary() + "[" + ChatUtils.getSecondary() + modules.size() + ChatUtils.getPrimary() + "]: " + ChatUtils.getSecondary() + builder, getName());
+                EUClient.CHAT_MANAGER.message("Modules " + ChatUtils.getPrimary() + "[" + ChatUtils.getSecondary() + modules.size() + ChatUtils.getPrimary() + "]: " + ChatUtils.getSecondary() + builder, getName());
             }
         } else {
             messageSyntax();
