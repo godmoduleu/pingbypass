@@ -1,8 +1,11 @@
 # pingbypass
 
-headlessmc pingbypass 1.21.4
+Minecraft 1.21.4 Pingbypass - HeadlessMC
 
-credits (Client Develop) :
+credits (Client Developers) :
 - HumanBean 
 - suposoe
-- Tinkoprof
+- [Tinkoprof](https://github.com/tinkoprofplus)
+
+Client Base:
+[Sydney Legacy](https://github.com/sydney-client/Sydney-Legacy)
