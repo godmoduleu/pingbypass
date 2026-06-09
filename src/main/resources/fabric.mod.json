@@ -5,6 +5,8 @@
 	"name": "EUClient",
 	"description": "EUClient is a Minecraft utility mod aimed at anarchy servers, giving you useful features for combat and utility.",
 	"authors": [
+		"godmodule",
+		"Tinkoprof",
 		"EU",
 		"p4nda",
 		"TheNano"
