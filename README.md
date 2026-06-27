@@ -165,4 +165,4 @@ Server-side manager and PingBypass packaging:
 
 ## License
 
-This project is licensed under GPL-3.0. See [`LICENSE`](LICENSE).
+This project is licensed under MIT. See [`LICENSE`](LICENSE).
